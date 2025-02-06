@@ -13,15 +13,35 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
 import static com.mongodb.client.model.Filters.eq;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.bson.Document;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -31,7 +51,7 @@ import org.json.simple.parser.JSONParser;
  * @author rokom
  */
 public class CryptoChaunGUI extends javax.swing.JFrame {
-
+    private String API_key;
     /**
      * Creates new form CryptoChaunGUI
      */
@@ -58,6 +78,9 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         exitBTN = new javax.swing.JButton();
         passwordPF = new javax.swing.JPasswordField();
         progressPB = new javax.swing.JProgressBar();
+        apiBTN = new javax.swing.JButton();
+        fetchBTN = new javax.swing.JButton();
+        chartBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,6 +128,27 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
 
         progressPB.setForeground(new java.awt.Color(102, 255, 0));
 
+        apiBTN.setText("Enter API Key");
+        apiBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                apiBTNActionPerformed(evt);
+            }
+        });
+
+        fetchBTN.setText("Fetch API");
+        fetchBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fetchBTNActionPerformed(evt);
+            }
+        });
+
+        chartBTN.setText("Chart");
+        chartBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chartBTNActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout backgroundJPLayout = new javax.swing.GroupLayout(backgroundJP);
         backgroundJP.setLayout(backgroundJPLayout);
         backgroundJPLayout.setHorizontalGroup(
@@ -121,6 +165,12 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                             .addGroup(backgroundJPLayout.createSequentialGroup()
                                 .addGap(24, 24, 24)
                                 .addComponent(exitBTN)
+                                .addGap(41, 41, 41)
+                                .addComponent(apiBTN)
+                                .addGap(35, 35, 35)
+                                .addComponent(fetchBTN)
+                                .addGap(34, 34, 34)
+                                .addComponent(chartBTN)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(backgroundJPLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -156,7 +206,10 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                         .addGap(41, 41, 41)))
                 .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(connectBTN)
-                    .addComponent(exitBTN))
+                    .addComponent(exitBTN)
+                    .addComponent(apiBTN)
+                    .addComponent(fetchBTN)
+                    .addComponent(chartBTN))
                 .addGap(37, 37, 37))
         );
 
@@ -180,6 +233,32 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private String makeAPICall(String uri, List<NameValuePair> parameters)
+        throws URISyntaxException, IOException {
+        String response_content = "";
+        
+        URIBuilder query = new URIBuilder(uri);
+        query.addParameters(parameters);
+        
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpGet request = new HttpGet(query.build());
+        
+        request.setHeader(HttpHeaders.ACCEPT, "application/json");
+        request.addHeader("X-CMC_PRO_API_KEY", API_key);
+        
+        CloseableHttpResponse response = client.execute(request);
+        
+        try {
+            System.out.println(response.getStatusLine());
+            HttpEntity entity = response.getEntity();
+            response_content = EntityUtils.toString(entity);
+            EntityUtils.consume(entity);
+        } finally {
+            response.close();
+        }
+        
+        return response_content;
+    }
     private void exitBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBTNActionPerformed
         // TODO add your handling code here:
         this.dispose();
@@ -286,6 +365,42 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_passwordPFActionPerformed
 
+    private void apiBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_apiBTNActionPerformed
+        // TODO add your handling code here:
+        API_key = JOptionPane.showInputDialog(null, "Enter your API key: ");
+        String uri = "https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+        parameters.add(new BasicNameValuePair("start", "1"));
+        parameters.add(new BasicNameValuePair("limit", "5000"));
+        parameters.add(new BasicNameValuePair("convert", "USD"));
+        try {
+            String result = makeAPICall(uri, parameters);
+            System.out.println(result);
+        }
+        catch(IOException e) {
+            System.out.println(e);
+        }
+        catch (URISyntaxException e) {
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_apiBTNActionPerformed
+
+    private void chartBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chartBTNActionPerformed
+        // TODO add your handling code here:
+        DefaultPieDataset myPieDataset = new DefaultPieDataset();
+        myPieDataset.setValue("One", usernameTF.getText().length());
+        myPieDataset.setValue("Two", passwordPF.getPassword().toString().length());
+        JFreeChart myChart = ChartFactory.createPieChart("Pie Chart", myPieDataset, rootPaneCheckingEnabled, rootPaneCheckingEnabled, Locale.ENGLISH);
+        ChartFrame chartFrame = new ChartFrame("Pie Chart", myChart);
+        chartFrame.setVisible(true);
+        chartFrame.setSize(400, 500);
+    }//GEN-LAST:event_chartBTNActionPerformed
+
+    private void fetchBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fetchBTNActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_fetchBTNActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -322,10 +437,13 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton apiBTN;
     private javax.swing.JPanel backgroundJP;
+    private javax.swing.JButton chartBTN;
     private javax.swing.JButton connectBTN;
     private javax.swing.JTextArea displayTA;
     private javax.swing.JButton exitBTN;
+    private javax.swing.JButton fetchBTN;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel passwordLBL;
     private javax.swing.JPasswordField passwordPF;

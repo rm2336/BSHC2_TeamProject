@@ -64,6 +64,12 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                                   <Component id="exitBTN" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                                  <Component id="apiBTN" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+                                  <Component id="fetchBTN" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                                  <Component id="chartBTN" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
@@ -114,6 +120,9 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="connectBTN" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="exitBTN" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="apiBTN" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="fetchBTN" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="chartBTN" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
               </Group>
@@ -204,6 +213,30 @@
               <Color blue="0" green="ff" red="66" type="rgb"/>
             </Property>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="apiBTN">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Enter API Key"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="apiBTNActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="fetchBTN">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Fetch API"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fetchBTNActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="chartBTN">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Chart"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chartBTNActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
