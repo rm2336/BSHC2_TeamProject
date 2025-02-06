@@ -15,6 +15,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.result.InsertOneResult;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+
 import javax.swing.JOptionPane;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -37,7 +39,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.bson.BsonValue;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -52,6 +56,11 @@ import org.json.simple.parser.JSONParser;
  */
 public class CryptoChaunGUI extends javax.swing.JFrame {
     private String API_key;
+    private boolean isConnected = false;
+    private MongoClient mongoClient;
+    private MongoDatabase database;
+    private MongoCollection<Document> collection;
+    private MongoClientSettings settings;
     /**
      * Creates new form CryptoChaunGUI
      */
@@ -81,6 +90,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         apiBTN = new javax.swing.JButton();
         fetchBTN = new javax.swing.JButton();
         chartBTN = new javax.swing.JButton();
+        createBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -149,6 +159,13 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             }
         });
 
+        createBTN.setText("Insert Record");
+        createBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createBTNActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout backgroundJPLayout = new javax.swing.GroupLayout(backgroundJP);
         backgroundJP.setLayout(backgroundJPLayout);
         backgroundJPLayout.setHorizontalGroup(
@@ -181,15 +198,19 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(19, 19, 19))))
                     .addGroup(backgroundJPLayout.createSequentialGroup()
-                        .addComponent(progressPB, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(progressPB, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(createBTN))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         backgroundJPLayout.setVerticalGroup(
             backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(backgroundJPLayout.createSequentialGroup()
+                .addContainerGap(22, Short.MAX_VALUE)
                 .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(backgroundJPLayout.createSequentialGroup()
-                        .addGap(121, 121, 121)
+                        .addComponent(createBTN)
+                        .addGap(76, 76, 76)
                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(usernameLBL)
                             .addComponent(usernameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -201,7 +222,6 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                         .addComponent(progressPB, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundJPLayout.createSequentialGroup()
-                        .addContainerGap(22, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(41, 41, 41)))
                 .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -266,52 +286,6 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
 
     private void connectBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectBTNActionPerformed
         // TODO add your handling code here:
-        try {
-                URL weatherURL = new URL("https://www.met.ie/Open_Data/json/Outlook.json");
-                HttpURLConnection connection = (HttpURLConnection) weatherURL.openConnection();
-                connection.setRequestMethod("GET");
-                connection.connect();
-                
-                int responseCode = connection.getResponseCode();
-                System.out.println(responseCode);
-                
-                StringBuilder infoString = new StringBuilder();
-                Scanner scanner = new Scanner(weatherURL.openStream());
-                while (scanner.hasNext()) {
-                    infoString.append(scanner.nextLine());
-                }
-                scanner.close();
-                
-                //System.out.println("Info String: " + infoString);
-                
-                JSONParser myParse = new JSONParser();
-                JSONArray weatherData = new JSONArray();
-                Object parsedData = myParse.parse(String.valueOf(infoString));
-                weatherData.add(parsedData);
-                String forecast;
-                String searchTerm = "Overview:";
-                System.out.println(searchTerm.length());
-                for (int i = 0, matches = 0; i < (infoString.toString().length() - searchTerm.length() - 1); i++) {
-                    //System.out.println(infoString.toString().charAt(i));
-                    matches = 0;
-                    //System.out.println("I: " + i);
-                    for (int j = i, k = 0; j < (i + searchTerm.length()); j++, k++) {
-                        //System.out.println("J: " + j);
-                        if (infoString.toString().charAt(j) == searchTerm.charAt(k)) {
-                            matches++;
-                            //System.out.println("Matches: " + matches);
-                        }
-                    }
-                    if (matches == searchTerm.length()) {
-                        //System.out.println(i);
-                        forecast = infoString.toString().substring(i);
-                        System.out.println(forecast);
-                    }
-                }
-        }
-        catch(Exception e) {
-            System.out.println(e);
-        }
         
         // connect to MongoDB
         String password = "";
@@ -324,7 +298,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,e);
             progressPB.setValue(0);
         }
-        MongoClientSettings settings = null;
+        settings = null;
         try {
         String connectionString = "mongodb+srv://" + user + ":" + password + "@mycluster.eqvxj.mongodb.net/?retryWrites=true&w=majority&appName=myCluster";
         ServerApi serverApi = ServerApi.builder()
@@ -340,25 +314,23 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             progressPB.setValue(0);
         }
         // Create a new client and connect to the server
-        try (MongoClient mongoClient = MongoClients.create(settings)) {
+        MongoClient mongoClient = MongoClients.create(settings);
             try {
                 // Send a ping to confirm a successful connection
-                MongoDatabase database = mongoClient.getDatabase("character_list");
+                database = mongoClient.getDatabase("crypto_database");
                 database.runCommand(new Document("ping", 1));
-                MongoCollection<Document> collection = database.getCollection("got_characters");
+                collection = database.getCollection("crypto_stats");
                 progressPB.setValue(75);
-                Document output = collection.find(eq("name", "Steffon Baratheon")).first();
+                Document output = collection.find(eq("currency", "BitCoin")).first();
                 displayTA.setText(output.toString());
                 progressPB.setValue(100);
                 JOptionPane.showMessageDialog(null, "Pinged your deployment. You successfully connected to MongoDB!");
+                isConnected = true;
+                this.mongoClient = mongoClient;
             } catch (MongoException e) {
                 JOptionPane.showMessageDialog(null, e);
                 progressPB.setValue(0);
             }
-        }catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-            progressPB.setValue(0);
-        }
     }//GEN-LAST:event_connectBTNActionPerformed
 
     private void passwordPFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordPFActionPerformed
@@ -401,6 +373,21 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         
     }//GEN-LAST:event_fetchBTNActionPerformed
 
+    private void createBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createBTNActionPerformed
+        // TODO add your handling code here:
+        if (isConnected) {
+            String currency = JOptionPane.showInputDialog(null, "Enter currency name: ");
+            String value = JOptionPane.showInputDialog(null, "Enter currency value: ");
+            database = mongoClient.getDatabase("crypto_database");
+            Document newCurrency = new Document("_id", new ObjectId())
+                    .append("currency", currency)
+                    .append("value", value);
+            InsertOneResult result = collection.insertOne(newCurrency);
+            BsonValue id = result.getInsertedId();
+            displayTA.setText("New document id: " + id);
+        }
+    }//GEN-LAST:event_createBTNActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -441,6 +428,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private javax.swing.JPanel backgroundJP;
     private javax.swing.JButton chartBTN;
     private javax.swing.JButton connectBTN;
+    private javax.swing.JButton createBTN;
     private javax.swing.JTextArea displayTA;
     private javax.swing.JButton exitBTN;
     private javax.swing.JButton fetchBTN;
