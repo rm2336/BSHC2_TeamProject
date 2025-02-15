@@ -23,6 +23,7 @@ import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
+import com.sun.syndication.feed.synd.SyndEntryImpl;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -85,6 +86,8 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private ArrayList<Double> totalValues = new ArrayList<>();
     private JSONObject object;
     private int jsonListSize = 30;
+    private List<SyndEntryImpl> newsEntries;
+    private int articleIndex = -1;
     /**
      * Creates new form CryptoChaunGUI
      */
@@ -131,6 +134,10 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         }
     }
     
+    public void setNewsEntries(List<SyndEntryImpl> list) {
+        newsEntries = list;
+    }
+    
     public String readCollection(MongoCollection<Document> collection) {
         FindIterable<Document> output = collection.find(new Document()).projection(exclude("_id"));
         List<Document> results = new ArrayList<>();
@@ -169,7 +176,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         backgroundJP = new javax.swing.JPanel();
         usernameLBL = new javax.swing.JLabel();
         passwordLBL = new javax.swing.JLabel();
-        usernameTF = new javax.swing.JTextField();
+        clusterTF = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         displayTA = new javax.swing.JTextArea();
         connectBTN = new javax.swing.JButton();
@@ -183,6 +190,10 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         readBTN = new javax.swing.JButton();
         updateBTN = new javax.swing.JButton();
         deleteBTN = new javax.swing.JButton();
+        clusterLBL = new javax.swing.JLabel();
+        usernameTF = new javax.swing.JTextField();
+        newsBTN = new javax.swing.JButton();
+        nextArticleBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -196,7 +207,8 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         passwordLBL.setForeground(new java.awt.Color(255, 255, 255));
         passwordLBL.setText("Password:");
 
-        usernameTF.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        clusterTF.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        clusterTF.setText("mycluster.eqvxj");
 
         displayTA.setEditable(false);
         displayTA.setColumns(20);
@@ -279,6 +291,26 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             }
         });
 
+        clusterLBL.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        clusterLBL.setForeground(new java.awt.Color(255, 255, 255));
+        clusterLBL.setText("Cluster:");
+
+        usernameTF.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+
+        newsBTN.setText("Get News");
+        newsBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newsBTNActionPerformed(evt);
+            }
+        });
+
+        nextArticleBTN.setText(">");
+        nextArticleBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextArticleBTNActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout backgroundJPLayout = new javax.swing.GroupLayout(backgroundJP);
         backgroundJP.setLayout(backgroundJPLayout);
         backgroundJPLayout.setHorizontalGroup(
@@ -296,19 +328,6 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                                 .addGap(8, 8, 8)))
                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(backgroundJPLayout.createSequentialGroup()
-                                .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(backgroundJPLayout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(passwordPF, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-                                            .addComponent(usernameTF)))
-                                    .addGroup(backgroundJPLayout.createSequentialGroup()
-                                        .addGap(10, 10, 10)
-                                        .addComponent(deleteBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane1)
-                                .addGap(35, 35, 35))
-                            .addGroup(backgroundJPLayout.createSequentialGroup()
                                 .addGap(24, 24, 24)
                                 .addComponent(exitBTN)
                                 .addGap(41, 41, 41)
@@ -317,22 +336,54 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                                 .addComponent(fetchBTN)
                                 .addGap(34, 34, 34)
                                 .addComponent(chartBTN)
-                                .addContainerGap(202, Short.MAX_VALUE))))
+                                .addContainerGap(202, Short.MAX_VALUE))
+                            .addGroup(backgroundJPLayout.createSequentialGroup()
+                                .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(backgroundJPLayout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(deleteBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(backgroundJPLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(passwordPF, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                                            .addComponent(usernameTF))))
+                                .addGap(18, 131, Short.MAX_VALUE)
+                                .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(backgroundJPLayout.createSequentialGroup()
+                                        .addComponent(newsBTN)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(nextArticleBTN)
+                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(backgroundJPLayout.createSequentialGroup()
+                                        .addComponent(jScrollPane1)
+                                        .addGap(35, 35, 35))))))
                     .addGroup(backgroundJPLayout.createSequentialGroup()
                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(backgroundJPLayout.createSequentialGroup()
+                                .addComponent(clusterLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(clusterTF, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(progressPB, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(backgroundJPLayout.createSequentialGroup()
                                 .addComponent(createBTN)
                                 .addGap(18, 18, 18)
                                 .addComponent(readBTN)))
-                        .addGap(0, 500, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         backgroundJPLayout.setVerticalGroup(
             backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(backgroundJPLayout.createSequentialGroup()
                 .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(backgroundJPLayout.createSequentialGroup()
-                        .addContainerGap(61, Short.MAX_VALUE)
+                        .addGap(24, 24, 24)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(newsBTN)
+                            .addComponent(nextArticleBTN))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(backgroundJPLayout.createSequentialGroup()
+                        .addContainerGap(50, Short.MAX_VALUE)
                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(createBTN)
                             .addComponent(readBTN))
@@ -348,13 +399,13 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(passwordLBL)
                             .addComponent(passwordPF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18))
-                    .addGroup(backgroundJPLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(clusterLBL)
+                            .addComponent(clusterTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(37, 37, 37)))
                 .addComponent(progressPB, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(connectBTN)
                     .addComponent(exitBTN)
@@ -421,9 +472,11 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         // connect to MongoDB
         String password = "";
         String user = "";
+        String clusterName = "";
         try {
             user = URLEncoder.encode(usernameTF.getText(), "UTF-8");
             password = URLEncoder.encode(passwordPF.getText(), "UTF-8");
+            clusterName = URLEncoder.encode(clusterTF.getText(), "UTF-8");
             progressPB.setValue(25);
         } catch (UnsupportedEncodingException e) {
             JOptionPane.showMessageDialog(null,e);
@@ -431,7 +484,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         }
         settings = null;
         try {
-        String connectionString = "mongodb+srv://" + user + ":" + password + "@mycluster.eqvxj.mongodb.net/?retryWrites=true&w=majority&appName=myCluster";
+        String connectionString = "mongodb+srv://" + user + ":" + password + "@" + clusterName + ".mongodb.net/?retryWrites=true&w=majority&appName=myCluster";
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .build();
@@ -754,6 +807,34 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         System.out.println("Modified: " + result.getDeletedCount());
     }//GEN-LAST:event_deleteBTNActionPerformed
 
+    private void newsBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newsBTNActionPerformed
+        // TODO add your handling code here:#
+        displayTA.setText("");
+        for (int i = 0; i < newsEntries.size(); i++) {
+            displayTA.append("- " + newsEntries.get(i).getTitle() + "\n");
+            displayTA.append(newsEntries.get(i).getPublishedDate() + "\n\n");
+        }
+        displayTA.getCaret().moveDot(0);
+    }//GEN-LAST:event_newsBTNActionPerformed
+
+    private void nextArticleBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextArticleBTNActionPerformed
+        // TODO add your handling code here:
+        int tagIndex = 0;
+        if (articleIndex < newsEntries.size())
+            articleIndex++;
+        for (int i = 0; i < newsEntries.get(articleIndex).getDescription().toString().length(); i++) {
+            if (newsEntries.get(articleIndex).getDescription().toString().charAt(i) == '<') {
+                if (newsEntries.get(articleIndex).getDescription().toString().charAt(i + 1) == 'p')
+                    if (newsEntries.get(articleIndex).getDescription().toString().charAt(i + 2) == '>')
+                        tagIndex = i;
+            }
+        }
+        String description = newsEntries.get(articleIndex).getDescription().toString().substring(tagIndex);
+        description = description.replaceAll("<p>", "");
+        description = description.replaceAll("</p>", "");
+        displayTA.setText(description);
+    }//GEN-LAST:event_nextArticleBTNActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -793,6 +874,8 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private javax.swing.JButton apiBTN;
     private javax.swing.JPanel backgroundJP;
     private javax.swing.JButton chartBTN;
+    private javax.swing.JLabel clusterLBL;
+    private javax.swing.JTextField clusterTF;
     private javax.swing.JButton connectBTN;
     private javax.swing.JButton createBTN;
     private javax.swing.JButton deleteBTN;
@@ -800,6 +883,8 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private javax.swing.JButton exitBTN;
     private javax.swing.JButton fetchBTN;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton newsBTN;
+    private javax.swing.JButton nextArticleBTN;
     private javax.swing.JLabel passwordLBL;
     private javax.swing.JPasswordField passwordPF;
     private javax.swing.JProgressBar progressPB;
