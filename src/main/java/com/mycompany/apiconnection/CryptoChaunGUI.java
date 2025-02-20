@@ -93,6 +93,15 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
      */
     public CryptoChaunGUI() {
         initComponents();
+        
+            // Load credentials if available
+    String[] savedCredentials = CredentialManager.loadCredentials();
+    if (savedCredentials != null) {
+        usernameTF.setText(savedCredentials[0]);
+        passwordPF.setText(savedCredentials[1]);
+        clusterTF.setText(savedCredentials[2]);
+    }
+        
         // read contents of the stats file if it exists
         try {
             File theFile = new File("stats.json");
@@ -208,7 +217,11 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         passwordLBL.setText("Password:");
 
         clusterTF.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        clusterTF.setText("mycluster.eqvxj");
+        clusterTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clusterTFActionPerformed(evt);
+            }
+        });
 
         displayTA.setEditable(false);
         displayTA.setColumns(20);
@@ -439,26 +452,49 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         throws URISyntaxException, IOException {
         String response_content = "";
         
+    // URIBuilder is used to safely construct a URL with query parameters.
         URIBuilder query = new URIBuilder(uri);
         query.addParameters(parameters);
         
+    // CloseableHttpClient comes from Apache’s HTTP library.
+    // It’s "closeable" to release network resources once done 
+    // — avoiding memory leaks.
+        // It creates an HTTP client for sending requests.
         CloseableHttpClient client = HttpClients.createDefault();
+    // HttpGet sets up an HTTP GET request
+    // — used to retrieve data from the API.
+        //query.build() finalizes the URI with all query parameters.
         HttpGet request = new HttpGet(query.build());
         
+    // Headers tell the API what kind of request this is.
+    // Accept HTTP header defines a data type expected in a response sent from the server.
         request.setHeader(HttpHeaders.ACCEPT, "application/json");
+        // API key for authentication
         request.addHeader("X-CMC_PRO_API_KEY", API_key);
         
+        // client.execute(request) sends the HTTP request and waits for the server’s response.
+        // The response is stored in CloseableHttpResponse.
         CloseableHttpResponse response = client.execute(request);
         
         try {
+            // print status line like 200 = success!
             System.out.println(response.getStatusLine());
+            
+            //gets the Http respones body where the json data lives
             HttpEntity entity = response.getEntity();
+            
+                // converts the response body into a String
+            // Contains the API’s JSON response as a string
             response_content = EntityUtils.toString(entity);
+            
+            // Ensures the HTTP entity (response body) is fully consumed and cleaned up.
+            // It prevents resource leaks — a crucial step when handling network connections.
             EntityUtils.consume(entity);
         } finally {
             response.close();
         }
-        
+        // The method returns the API response body as a String.
+        // This allows the calling method to parse the JSON data.
         return response_content;
     }
     private void exitBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBTNActionPerformed
@@ -473,16 +509,34 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         String password = "";
         String user = "";
         String clusterName = "";
-        try {
+        
+        // Load saved credentials if available
+        String[] savedCredentials = CredentialManager.loadCredentials();
+        if(savedCredentials != null){
+            //load credentials into variables
+            user = savedCredentials[0];
+            password = savedCredentials[1];
+            clusterName = savedCredentials[2];
+            
+//            //set it to the textfield
+//            usernameTF.setText(user);
+//            passwordPF.setText(password);
+//            clusterTF.setText(clusterName);
+        }else{
+            try {
             user = URLEncoder.encode(usernameTF.getText(), "UTF-8");
             password = URLEncoder.encode(passwordPF.getText(), "UTF-8");
             clusterName = URLEncoder.encode(clusterTF.getText(), "UTF-8");
-            progressPB.setValue(25);
+            
         } catch (UnsupportedEncodingException e) {
             JOptionPane.showMessageDialog(null,e);
             progressPB.setValue(0);
         }
+    }
+        
+        progressPB.setValue(25);
         settings = null;
+
         try {
         String connectionString = "mongodb+srv://" + user + ":" + password + "@" + clusterName + ".mongodb.net/?retryWrites=true&w=majority&appName=myCluster";
         ServerApi serverApi = ServerApi.builder()
@@ -497,6 +551,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, e);
             progressPB.setValue(0);
         }
+        
         // Create a new client and connect to the server
         if (settings != null) {
             MongoClient mongoClient = MongoClients.create(settings);
@@ -507,10 +562,18 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                 collection = database.getCollection("crypto_stats");
                 progressPB.setValue(75);
                 displayTA.setText(readCollection(collection));
+                
+                // Save the database backup locally
+                saveDatabaseLocally();
+                
                 progressPB.setValue(100);
                 JOptionPane.showMessageDialog(null, "Pinged your deployment. You successfully connected to MongoDB!");
+                
                 isConnected = true;
                 this.mongoClient = mongoClient;
+                
+                // Save credentials after successful connection
+                CredentialManager.saveCredentials(user, password, clusterName);
             } catch (MongoException e) {
                 JOptionPane.showMessageDialog(null, e);
                 progressPB.setValue(0);
@@ -518,6 +581,35 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_connectBTNActionPerformed
 
+    public void saveDatabaseLocally() {
+        if (collection == null){
+            JOptionPane.showMessageDialog(null, "Not connected to MongoDB!");
+            return;
+        }
+      
+        // Write to "crypto_backup.json"
+        try (FileWriter file = new FileWriter("crypto_backup.json")){
+            // retrieves all documents from the MongoDB collection exclude("_id")
+            FindIterable<Document> output = collection.find().projection(exclude("_id"));
+            List<Document> results = new ArrayList<>();
+            output.into(results);
+            
+            // Initializes a new JSONArray
+            JSONArray jsonArray = new JSONArray();
+            for (Document doc : results){
+                jsonArray.put(new JSONObject(doc.toJson()));
+            }
+            
+            file.write(jsonArray.toString(4));
+            file.flush();
+            JOptionPane.showMessageDialog(null, "Database backup saved successfully!");
+            
+        }catch (IOException e){
+            JOptionPane.showMessageDialog(null, "Error saving database: " + e.getMessage());
+        }
+    }
+    
+    
     private void passwordPFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordPFActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_passwordPFActionPerformed
@@ -834,6 +926,10 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         description = description.replaceAll("</p>", "");
         displayTA.setText(description);
     }//GEN-LAST:event_nextArticleBTNActionPerformed
+
+    private void clusterTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clusterTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_clusterTFActionPerformed
 
     /**
      * @param args the command line arguments
