@@ -93,6 +93,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
      */
     public CryptoChaunGUI() {
         initComponents();
+        chatBTN.setVisible(false);
         
             // Load credentials if available
     String[] savedCredentials = CredentialManager.loadCredentials();
@@ -203,6 +204,8 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         usernameTF = new javax.swing.JTextField();
         newsBTN = new javax.swing.JButton();
         nextArticleBTN = new javax.swing.JButton();
+        chatBTN = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -324,6 +327,20 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             }
         });
 
+        chatBTN.setText("Chat");
+        chatBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chatBTNActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("?");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout backgroundJPLayout = new javax.swing.GroupLayout(backgroundJP);
         backgroundJP.setLayout(backgroundJPLayout);
         backgroundJPLayout.setHorizontalGroup(
@@ -349,7 +366,9 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                                 .addComponent(fetchBTN)
                                 .addGap(34, 34, 34)
                                 .addComponent(chartBTN)
-                                .addContainerGap(202, Short.MAX_VALUE))
+                                .addGap(30, 30, 30)
+                                .addComponent(chatBTN)
+                                .addContainerGap())
                             .addGroup(backgroundJPLayout.createSequentialGroup()
                                 .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(backgroundJPLayout.createSequentialGroup()
@@ -360,15 +379,19 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addComponent(passwordPF, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
                                             .addComponent(usernameTF))))
-                                .addGap(18, 131, Short.MAX_VALUE)
+                                .addGap(18, 18, Short.MAX_VALUE)
                                 .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(backgroundJPLayout.createSequentialGroup()
                                         .addComponent(newsBTN)
                                         .addGap(18, 18, 18)
                                         .addComponent(nextArticleBTN)
                                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(backgroundJPLayout.createSequentialGroup()
-                                        .addComponent(jScrollPane1)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundJPLayout.createSequentialGroup()
+                                        .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(backgroundJPLayout.createSequentialGroup()
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                                         .addGap(35, 35, 35))))))
                     .addGroup(backgroundJPLayout.createSequentialGroup()
                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -388,7 +411,8 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             .addGroup(backgroundJPLayout.createSequentialGroup()
                 .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(backgroundJPLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
+                        .addComponent(jButton1)
+                        .addGap(1, 1, 1)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(28, 28, 28)
                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -424,7 +448,8 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                     .addComponent(exitBTN)
                     .addComponent(apiBTN)
                     .addComponent(fetchBTN)
-                    .addComponent(chartBTN))
+                    .addComponent(chartBTN)
+                    .addComponent(chatBTN))
                 .addGap(37, 37, 37))
         );
 
@@ -432,10 +457,10 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backgroundJP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(backgroundJP, javax.swing.GroupLayout.PREFERRED_SIZE, 667, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -522,18 +547,16 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
 //            usernameTF.setText(user);
 //            passwordPF.setText(password);
 //            clusterTF.setText(clusterName);
-        }else{
-            try {
+        }
+        try {
             user = URLEncoder.encode(usernameTF.getText(), "UTF-8");
             password = URLEncoder.encode(passwordPF.getText(), "UTF-8");
             clusterName = URLEncoder.encode(clusterTF.getText(), "UTF-8");
             
-        } catch (UnsupportedEncodingException e) {
+        }catch (UnsupportedEncodingException e) {
             JOptionPane.showMessageDialog(null,e);
             progressPB.setValue(0);
         }
-    }
-        
         progressPB.setValue(25);
         settings = null;
 
@@ -574,6 +597,10 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                 
                 // Save credentials after successful connection
                 CredentialManager.saveCredentials(user, password, clusterName);
+                
+                // make chat button visible
+                chatBTN.setVisible(true);
+                
             } catch (MongoException e) {
                 JOptionPane.showMessageDialog(null, e);
                 progressPB.setValue(0);
@@ -931,6 +958,20 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_clusterTFActionPerformed
 
+    private void chatBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chatBTNActionPerformed
+        // TODO add your handling code here:
+        ChatGUI chatScreen = new ChatGUI();
+        chatScreen.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_chatBTNActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        TutorialGUI tutorialScreen = new TutorialGUI();
+        tutorialScreen.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -970,6 +1011,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private javax.swing.JButton apiBTN;
     private javax.swing.JPanel backgroundJP;
     private javax.swing.JButton chartBTN;
+    private javax.swing.JButton chatBTN;
     private javax.swing.JLabel clusterLBL;
     private javax.swing.JTextField clusterTF;
     private javax.swing.JButton connectBTN;
@@ -978,6 +1020,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private javax.swing.JTextArea displayTA;
     private javax.swing.JButton exitBTN;
     private javax.swing.JButton fetchBTN;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton newsBTN;
     private javax.swing.JButton nextArticleBTN;
