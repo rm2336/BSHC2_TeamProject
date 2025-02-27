@@ -1,10 +1,30 @@
 [
     {
-        "quantity": "500",
+        "quantity": "2",
         "currency": "Bitcoin"
     },
     {
-        "quantity": "1",
+        "quantity": "700",
+        "currency": "Dogecoin"
+    },
+    {
+        "quantity": "10",
+        "currency": "BNB"
+    },
+    {
+        "quantity": "50",
         "currency": "TRON"
+    },
+    {
+        "quantity": "500",
+        "currency": "Shiba Inu"
+    },
+    {
+        "quantity": "40",
+        "currency": "XRP"
+    },
+    {
+        "quantity": "500",
+        "currency": "Chainlink"
     }
 ]

@@ -206,6 +206,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         nextArticleBTN = new javax.swing.JButton();
         chatBTN = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        prevArticleBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -341,6 +342,13 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             }
         });
 
+        prevArticleBTN.setText("<");
+        prevArticleBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                prevArticleBTNActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout backgroundJPLayout = new javax.swing.GroupLayout(backgroundJP);
         backgroundJP.setLayout(backgroundJPLayout);
         backgroundJPLayout.setHorizontalGroup(
@@ -358,18 +366,6 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                                 .addGap(8, 8, 8)))
                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(backgroundJPLayout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(exitBTN)
-                                .addGap(41, 41, 41)
-                                .addComponent(apiBTN)
-                                .addGap(35, 35, 35)
-                                .addComponent(fetchBTN)
-                                .addGap(34, 34, 34)
-                                .addComponent(chartBTN)
-                                .addGap(30, 30, 30)
-                                .addComponent(chatBTN)
-                                .addContainerGap())
-                            .addGroup(backgroundJPLayout.createSequentialGroup()
                                 .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(backgroundJPLayout.createSequentialGroup()
                                         .addGap(10, 10, 10)
@@ -381,18 +377,33 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                                             .addComponent(usernameTF))))
                                 .addGap(18, 18, Short.MAX_VALUE)
                                 .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundJPLayout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(backgroundJPLayout.createSequentialGroup()
                                         .addComponent(newsBTN)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(prevArticleBTN)
                                         .addGap(18, 18, 18)
                                         .addComponent(nextArticleBTN)
                                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundJPLayout.createSequentialGroup()
-                                        .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addGroup(backgroundJPLayout.createSequentialGroup()
-                                                .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                                        .addGap(35, 35, 35))))))
+                                    .addGroup(backgroundJPLayout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addGroup(backgroundJPLayout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addComponent(exitBTN)
+                                .addGap(41, 41, 41)
+                                .addComponent(apiBTN)
+                                .addGap(35, 35, 35)
+                                .addComponent(fetchBTN)
+                                .addGap(34, 34, 34)
+                                .addComponent(chartBTN)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(chatBTN)
+                                .addGap(27, 27, 27))))
                     .addGroup(backgroundJPLayout.createSequentialGroup()
                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(backgroundJPLayout.createSequentialGroup()
@@ -417,10 +428,11 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                         .addGap(28, 28, 28)
                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(newsBTN)
-                            .addComponent(nextArticleBTN))
+                            .addComponent(nextArticleBTN)
+                            .addComponent(prevArticleBTN))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(backgroundJPLayout.createSequentialGroup()
-                        .addContainerGap(50, Short.MAX_VALUE)
+                        .addContainerGap(47, Short.MAX_VALUE)
                         .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(createBTN)
                             .addComponent(readBTN))
@@ -459,7 +471,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(backgroundJP, javax.swing.GroupLayout.PREFERRED_SIZE, 667, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(backgroundJP, javax.swing.GroupLayout.PREFERRED_SIZE, 727, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -676,6 +688,12 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         ChartFrame chartFrame = new ChartFrame("Chart", myChart);
         chartFrame.setVisible(true);
         chartFrame.setSize(400, 500);
+        // calculate sum of all currency values
+        double portfolioValue = 0;
+        for (int i = 0; i < totalValues.size(); i++) {
+            portfolioValue += totalValues.get(i);
+        }
+        displayTA.setText("Total value of portfolio: €" + BigDecimal.valueOf(portfolioValue).setScale(2, RoundingMode.HALF_EVEN));
     }//GEN-LAST:event_chartBTNActionPerformed
 
     private void fetchBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fetchBTNActionPerformed
@@ -688,130 +706,6 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         parameters.add(new BasicNameValuePair("convert", "EUR"));
         try {
             String result = makeAPICall(uri, parameters);
-//            result = "{\"status\":{\"timestamp\":\"2025-02-12T10:21:53.288Z\""
-//                    + ",\"error_code\":0,\"error_message\":null,\"elapsed\":16,\"credit_count"
-//                    + "\":1,\"notice\":null,\"total_count\":10859},\"data\":[{\"id\":1,\"name"
-//                    + "\":\"Bitcoin\",\"symbol\":\"BTC\",\"slug\":\"bitcoin\",\"num_market_pairs"
-//                    + "\":11937,\"date_added\":\"2010-07-13T00:00:00.000Z\",\"tags\":[\"mineable"
-//                    + "\",\"pow\",\"sha-256\",\"store-of-value\",\"state-channel\",\"coinbase-ventures-portfolio"
-//                    + "\",\"three-arrows-capital-portfolio\",\"polychain-capital-portfolio\",\"b"
-//                    + "inance-labs-portfolio\",\"blockchain-capital-portfolio\",\"boostvc-portfo"
-//                    + "lio\",\"cms-holdings-portfolio\",\"dcg-portfolio\",\"dragonfly-capital-po"
-//                    + "rtfolio\",\"electric-capital-portfolio\",\"fabric-ventures-portfolio\",\"fram"
-//                    + "ework-ventures-portfolio\",\"galaxy-digital-portfolio\",\"huobi-capi"
-//                    + "tal-portfolio\",\"alameda-research-portfolio\",\"a16z-portfolio\",\"1con"
-//                    + "firmation-portfolio\",\"winklevoss-capital-portfolio\",\"usv-portf"
-//                    + "olio\",\"placeholder-ventures-portfolio\",\"pantera-capital-portfo"
-//                    + "lio\",\"multicoin-capital-portfolio\",\"paradigm-portfolio\",\"bitcoin-ecosyste"
-//                    + "m\",\"ftx-bankruptcy-estate\",\"2017-2018-alt-season\"],\"max_supply\":210000"
-//                    + "00,\"circulating_supply\":19823146,\"total_supply\":19823146,\"infinite_sup"
-//                    + "ply\":false,\"platform\":null,\"cmc_rank\":1,\"self_reported_circulating_su"
-//                    + "pply\":null,\"self_reported_market_cap\":null,\"tvl_ratio\":null,\"last_up"
-//                    + "dated\":\"2025-02-12T10:19:00.000Z\",\"quote\":{\"EUR\":{\"price\":92623.7937"
-//                    + "1037334,\"volume_24h\":35589018549.38164,\"volume_change_24h\":10.5158,\"perc"
-//                    + "ent_change_1h\":-0.13046824,\"percent_change_24h\":-2.08835051,\"percent_cha"
-//                    + "nge_7d\":-1.68261272,\"percent_change_30d\":4.08719941,\"percent_change_60d\":-5.20"
-//                    + "268572,\"percent_change_90d\":5.22467304,\"market_cap\":18360949857"
-//                    + "94.6128,\"market_cap_dominance\":60.2756,\"fully_diluted_market_cap\":19450996"
-//                    + "67917.8447,\"tvl\":null,\"last_updated\":\"2025-02-12T10:19:58."
-//                    + "000Z\"}}},{\"id\":1027,\"name\":\"Ethereum\",\"symbol\":\"ETH\",\"slug\":\"ethe"
-//                    + "reum\",\"num_market_pairs\":9926,\"date_added\":\"2015-08-07T00:00:00"
-//                    + ".000Z\",\"tags\":[\"pos\",\"smart-contracts\",\"ethereum-ecosystem\",\"coinbase-ve"
-//                    + "ntures-portfolio\",\"three-arrows-capital-portfolio\",\"polychain-capi"
-//                    + "tal-portfolio\",\"heco-ecosystem\",\"binance-labs-portfolio\",\"avalanch"
-//                    + "e-ecosystem\",\"solana-ecosystem\",\"blockchain-capital-portfolio\",\"boo"
-//                    + "stvc-portfolio\",\"cms-holdings-portfolio\",\"dcg-portfolio\",\"dragon"
-//                    + "fly-capital-portfolio\",\"electric-capital-portfolio\",\"fabric-ventur"
-//                    + "es-portfolio\",\"framework-ventures-portfolio\",\"hashkey-capital-port"
-//                    + "folio\",\"kenetic-capital-portfolio\",\"huobi-capital-portfolio\",\"alamed"
-//                    + "a-research-portfolio\",\"a16z-portfolio\",\"1confirmation-portfol"
-//                    + "io\",\"winklevoss-capital-portfolio\",\"usv-portfolio\",\"placeholder-vent"
-//                    + "ures-portfolio\",\"pantera-capital-portfolio\",\"multicoin-capital-por"
-//                    + "tfolio\",\"paradigm-portfolio\",\"tezos-ecosystem\",\"near-protocol-ec"
-//                    + "osystem\",\"bnb-chain-ecosystem\",\"velas-ecosystem\",\"ethereum-pow-e"
-//                    + "cosystem\",\"osmosis-ecosystem\",\"layer-1\",\"ftx-bankruptcy-est"
-//                    + "ate\",\"zksync-era-ecosystem\",\"viction-ecosystem\",\"klaytn-ecosystem\",\"sora-e"
-//                    + "cosystem\",\"rsk-rbtc-ecosystem\",\"starknet-ecosystem\"],\"max_supp"
-//                    + "ly\":null,\"circulating_supply\":120543070.67367822,\"total_supply\":1205"
-//                    + "43070.67367822,\"infinite_supply\":true,\"platform\":null,\"cmc_rank\":2,\"sel"
-//                    + "f_reported_circulating_supply\":null,\"self_reported_market_cap\":null,\"tvl_ra"
-//                    + "tio\":null,\"last_updated\":\"2025-02-12T10:20:00.000Z\",\"quote\":{\"EUR\":{\"pr"
-//                    + "ice\":2529.899929532977,\"volume_24h\":19417050040.993183,\"volume_change_24h\":10."
-//                    + "0753,\"percent_change_1h\":0.23805787,\"percent_change_24h\":-2.96479608,\"perce"
-//                    + "nt_change_7d\":-5.30304269,\"percent_change_30d\":-16.42938681,\"percent_chang"
-//                    + "e_60d\":-32.56823931,\"percent_change_90d\":-18.22992377,\"market_cap\":3049619"
-//                    + "06003.02716,\"market_cap_dominance\":10.0136,\"fully_diluted_market_cap\":3049"
-//                    + "61906003.02795,\"tvl\":null,\"last_updated\":\"2025-02-12T10:19:"
-//                    + "58.000Z\"}}},{\"id\":825,\"name\":\"Tether USDt\",\"symbol\":\"USDT\",\"slu"
-//                    + "g\":\"tether\",\"num_market_pairs\":116303,\"date_added\":\"2015-02-25T0"
-//                    + "0:00:00.000Z\",\"tags\":[\"stablecoin\",\"asset-backed-stablecoin\",\"ethere"
-//                    + "um-ecosystem\",\"waves-ecosystem\",\"bitcoin-cash-ecosystem\",\"heco-ecosy"
-//                    + "stem\",\"algorand-ecosystem\",\"avalanche-ecosystem\",\"solana-ecosys"
-//                    + "tem\",\"polygon-ecosystem\",\"fantom-ecosystem\",\"terra-ecosystem\",\"tezo"
-//                    + "s-ecosystem\",\"near-protocol-ecosystem\",\"arbitrum-ecosystem\",\"celo-"
-//                    + "ecosystem\",\"iotex-ecosystem\",\"zilliqa-ecosystem\",\"harmony-ecosy"
-//                    + "stem\",\"moonriver-ecosystem\",\"cronos-ecosystem\",\"injective-ecosystem\",\"bnb-"
-//                    + "chain-ecosystem\",\"oasis-ecosystem\",\"moonbeam-ecosystem\",\"usd-stablec"
-//                    + "oin\",\"xdc-ecosystem\",\"everscale-ecosystem\",\"velas-ecosystem\",\"doge-ch"
-//                    + "ain-ecosystem\",\"ethereum-pow-ecosystem\",\"aptos-ecosystem\",\"sui-ecos"
-//                    + "ystem\",\"optimism-ecosystem\",\"canto-ecosystem\",\"osmosis-ecosystem\",\"zksy"
-//                    + "nc-era-ecosystem\",\"pulsechain-ecosystem\",\"sei-ecosystem\",\"toncoin-ecosy"
-//                    + "stem\",\"fiat-stablecoin\",\"viction-ecosystem\",\"gnosis-chain-ecosystem\",\"klaytn"
-//                    + "-ecosystem\",\"okexchain-ecosystem\",\"conflux-ecosystem\",\"kcc-ecosyst"
-//                    + "em\",\"tron20-ecosystem\",\"kardiachain-ecosystem\",\"rsk-rbtc-ecosystem\",\"telo"
-//                    + "s-ecosystem\",\"boba-network-ecosystem\",\"fusion-network-ecosystem\",\"hoo-sma"
-//                    + "rt-chain-ecosystem\",\"secret-ecosystem\",\"aurora-ecosystem\",\"metis-androm"
-//                    + "eda-ecosystem\",\"meter-ecosystem\",\"fuse-ecosystem\",\"syscoin-ecosys"
-//                    + "tem\",\"milkomeda-ecosystem\",\"bitgert-ecosystem\",\"astar-ecosy"
-//                    + "stem\",\"cube-network-ecosystem\",\"thundercore-ecosystem\",\"redlight-cha"
-//                    + "in-ecosystem\",\"core-ecosystem\",\"polygon-zkevm-ecosystem\",\"eos-evm-eco"
-//                    + "system\",\"starknet-ecosystem\",\"mantle-ecosystem\",\"neon-evm-ecos"
-//                    + "ystem\",\"manta-pacific-ecosystem\",\"scroll-ecosystem\",\"x-layer-eco"
-//                    + "system\"],\"max_supply\":null,\"circulating_supply\":141953250507.84"
-//                    + "326,\"total_supply\":143570568759.4433,\"platform\":{\"id\":1027,\"na"
-//                    + "me\":\"Ethereum\",\"symbol\":\"ETH\",\"slug\":\"ethereum\",\"token_add"
-//                    + "ress\":\"0xdac17f958d2ee523a2206206994597c13d831ec7\"},\"infinite_sup"
-//                    + "ply\":true,\"cmc_rank\":3,\"self_reported_circulating_supply\":null,\"self_re"
-//                    + "ported_market_cap\":null,\"tvl_ratio\":null,\"last_updated\":\"2025-02-12T1"
-//                    + "0:19:00.000Z\",\"quote\":{\"EUR\":{\"price\":0.9643960927446409,\"volume_24h\":76535"
-//                    + "942674.24454,\"volume_change_24h\":3.6044,\"percent_change_1h\":0.03283513,\"perc"
-//                    + "ent_change_24h\":0.0097385,\"percent_change_7d\":-0.01100815,\"percent_chang"
-//                    + "e_30d\":0.12191477,\"percent_change_60d\":0.0276032,\"percent_change_90d\":-0.0"
-//                    + "1096483,\"market_cap\":136899160142.16525,\"market_cap_dominance\":4.4941,\"fu"
-//                    + "lly_diluted_market_cap\":138458895544.73346,\"tvl\":null,\"last_updated\":\"2025"
-//                    + "-02-12T10:19:58.000Z\"}}},{\"id\":52,\"name\":\"XRP\",\"symbol\":\"XRP\",\"slug\":\"x"
-//                    + "rp\",\"num_market_pairs\":1528,\"date_added\":\"2013-08-04T00:00:00.000Z\",\"tag"
-//                    + "s\":[\"medium-of-exchange\",\"enterprise-solutions\",\"xrp-ecosystem\",\"arrington-xr"
-//                    + "p-capital-portfolio\",\"galaxy-digital-portfolio\",\"a16z-portfolio\",\"pantera-capit"
-//                    + "al-portfolio\",\"bnb-chain-ecosystem\",\"ftx-bankruptcy-estate\",\"2017-2018-alt-sea"
-//                    + "son\",\"klaytn-ecosystem\",\"made-in-america\"],\"max_supply\":100000000000,\"circu"
-//                    + "lating_supply\":57762545657,\"total_supply\":99986504676,\"infinite_supply\":fa"
-//                    + "lse,\"platform\":null,\"cmc_rank\":4,\"self_reported_circulating_supply\":null,\"self_rep"
-//                    + "orted_market_cap\":null,\"tvl_ratio\":null,\"last_updated\":\"2025-02-12T10:20:0"
-//                    + "0.000Z\",\"quote\":{\"EUR\":{\"price\":2.3259854463746072,\"volume_24h\":421"
-//                    + "9411365.1087613,\"volume_change_24h\":-2.8114,\"percent_change_1h\":0.108808"
-//                    + "92,\"percent_change_24h\":-3.19115417,\"percent_change_7d\":-4.15208144,\"perce"
-//                    + "nt_change_30d\":-1.14142498,\"percent_change_60d\":-1.49178823,\"percent_ch"
-//                    + "ange_90d\":238.64824356,\"market_cap\":134354840543.73079,\"market_cap_domin"
-//                    + "ance\":4.4124,\"fully_diluted_market_cap\":232598544637.45782,\"tvl\":null,\"last"
-//                    + "_updated\":\"2025-02-12T10:19:58.000Z\"}}},{\"id\":5426,\"name\":\"Sola"
-//                    + "na\",\"symbol\":\"SOL\",\"slug\":\"solana\",\"num_market_pairs\":840,\"date_a"
-//                    + "dded\":\"2020-04-10T00:00:00.000Z\",\"tags\":[\"pos\",\"platform\",\"sola"
-//                    + "na-ecosystem\",\"cms-holdings-portfolio\",\"kenetic-capital-portfol"
-//                    + "io\",\"alameda-research-portfolio\",\"multicoin-capital-portfolio\",\"okx-vent"
-//                    + "ures-portfolio\",\"layer-1\",\"ftx-bankruptcy-estate\",\"alleged-sec-secur"
-//                    + "ities\",\"cmc-crypto-awards-2024\",\"made-in-america\"],\"max_sup"
-//                    + "ply\":null,\"circulating_supply\":488184434.00489986,\"total_supply\":5939261"
-//                    + "64.8848802,\"infinite_supply\":true,\"platform\":null,\"cmc_rank\":5,\"self_repor"
-//                    + "ted_circulating_supply\":null,\"self_reported_market_cap\":null,\"tvl_rat"
-//                    + "io\":null,\"last_updated\":\"2025-02-12T10:20:00.000Z\",\"quote\":{\"EUR\":{\"price\":189.1401"
-//                    + "7185157934,\"volume_24h\":2933773149.2095013,\"volume_change_24h\":-23.3879,\"perce"
-//                    + "nt_change_1h\":0.32252199,\"percent_change_24h\":-3.08539593,\"percent_change_7d\":-4.0"
-//                    + "9243523,\"percent_change_30d\":9.45783297,\"percent_change_60d\":-12.89289244,\"percent_cha"
-//                    + "nge_90d\":-11.28280626,\"market_cap\":92335287742.95274,\"market_cap_dominance\":3.0313,\"fu"
-//                    + "lly_diluted_market_cap\":112335296893.47287,\"tvl\":null,\"las"
-//                    + "t_updated\":\"2025-02-12T10:19:58.000Z\"}}},{\"id\":1839,\"name\":\"BNB\",\"symb"
-//                    + "ol\":\"BNB\",\"slug\":\"bnb\",\"num_market_pairs\":2355,\"date_added\":\"2017-07-25T00:00:00.000Z\",\"tags\":[\"marketplace\",\"centralized-exchange\",\"payments\",\"smart-contracts\",\"ethereum-ecosystem\",\"alameda-research-portfolio\",\"multicoin-capital-portfolio\",\"bnb-chain-ecosystem\",\"layer-1\",\"alleged-sec-securities\",\"celsius-bankruptcy-estate\"],\"max_supply\":null,\"circulating_supply\":142479384,\"total_supply\":142479384,\"infinite_supply\":false,\"platform\":null,\"cmc_rank\":6,\"self_reported_circulating_supply\":null,\"self_reported_market_cap\":null,\"tvl_ratio\":null,\"last_updated\":\"2025-02-12T10:20:00.000Z\",\"quote\":{\"EUR\":{\"price\":626.2297743984873,\"volume_24h\":1931946397.404982,\"volume_change_24h\":1.0264,\"percent_change_1h\":0.93765914,\"percent_change_24h\":1.40680567,\"percent_change_7d\":13.79168523,\"percent_change_30d\":-3.11255278,\"percent_change_60d\":-9.91335935,\"percent_change_90d\":1.15991383,\"market_cap\":89224832498.75543,\"market_cap_dominance\":2.9292,\"fully_diluted_market_cap\":89224832498.75667,\"tvl\":null,\"last_updated\":\"2025-02-12T10:19:58.000Z\"}}},{\"id\":3408,\"name\":\"USDC\",\"symbol\":\"USDC\",\"slug\":\"usd-coin\",\"num_market_pairs\":25633,\"date_added\":\"2018-10-08T00:00:00.000Z\",\"tags\":[\"medium-of-exchange\",\"stablecoin\",\"asset-backed-stablecoin\",\"ethereum-ecosystem\",\"waves-ecosystem\",\"bitcoin-cash-ecosystem\",\"wanchain-ecosystem\",\"coinbase-ventures-portfolio\",\"algorand-ecosystem\",\"avalanche-ecosystem\",\"solana-ecosystem\",\"hedera-hashgraph-ecosystem\",\"polygon-ecosystem\",\"terra-ecosystem\",\"near-protocol-ecosystem\",\"arbitrum-ecosystem\",\"celo-ecosystem\",\"iotex-ecosystem\",\"harmony-ecosystem\",\"moonriver-ecosystem\",\"cronos-ecosystem\",\"injective-ecosystem\",\"bnb-chain-ecosystem\",\"oasis-ecosystem\",\"moonbeam-ecosystem\",\"usd-stablecoin\",\"everscale-ecosystem\",\"velas-ecosystem\",\"doge-chain-ecosystem\",\"ethereum-pow-ecosystem\",\"aptos-ecosystem\",\"sui-ecosystem\",\"optimism-ecosystem\",\"canto-ecosystem\",\"osmosis-ecosystem\",\"zksync-era-ecosystem\",\"pulsechain-ecosystem\",\"base-ecosystem\",\"sei-ecosystem\",\"multiversx-ecosystem\",\"fiat-stablecoin\",\"viction-ecosystem\",\"gnosis-chain-ecosystem\",\"okexchain-ecosystem\",\"conflux-ecosystem\",\"kcc-ecosystem\",\"tron20-ecosystem\",\"kardiachain-ecosystem\",\"telos-ecosystem\",\"ronin-ecosystem\",\"boba-network-ecosystem\",\"kava-ecosystem\",\"secret-ecosystem\",\"aurora-ecosystem\",\"metis-andromeda-ecosystem\",\"meter-ecosystem\",\"fuse-ecosystem\",\"elastos-ecosystem\",\"syscoin-ecosystem\",\"milkomeda-ecosystem\",\"evmos-ecosystem\",\"bitgert-ecosystem\",\"astar-ecosystem\",\"thundercore-ecosystem\",\"tomb-chain-ecosystem\",\"wemix-ecosystem\",\"sx-network-ecosystem\",\"godwoken-ecosystem\",\"energi-ecosystem\",\"core-ecosystem\",\"polygon-zkevm-ecosystem\",\"starknet-ecosystem\",\"mantle-ecosystem\",\"neon-evm-ecosystem\",\"scroll-ecosystem\",\"shido-network-ecosystem\",\"made-in-america\"],\"max_supply\":null,\"circulating_supply\":56070979185.85878,\"total_supply\":56070979185.85878,\"platform\":{\"id\":1027,\"name\":\"Ethereum\",\"symbol\":\"ETH\",\"slug\":\"ethereum\",\"token_address\":\"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\"},\"infinite_supply\":false,\"cmc_rank\":7,\"self_reported_circulating_supply\":null,\"self_reported_market_cap\":null,\"tvl_ratio\":null,\"last_updated\":\"2025-02-12T10:20:00.000Z\",\"quote\":{\"EUR\":{\"price\":0.9641145042026845,\"volume_24h\":6971833964.324719,\"volume_change_24h\":9.3285,\"percent_change_1h\":-0.01801769,\"percent_change_24h\":-0.00183446,\"percent_change_7d\":0.01199361,\"percent_change_30d\":0.01334672,\"percent_change_60d\":0.01338983,\"percent_change_90d\":0.01725864,\"market_cap\":54058844297.93327,\"market_cap_dominance\":1.7747,\"fully_diluted_market_cap\":54058844297.93179,\"tvl\":null,\"last_updated\":\"2025-02-12T10:19:58.000Z\"}}},{\"id\":74,\"name\":\"Dogecoin\",\"symbol\":\"DOGE\",\"slug\":\"dogecoin\",\"num_market_pairs\":1163,\"date_added\":\"2013-12-15T00:00:00.000Z\",\"tags\":[\"mineable\",\"pow\",\"scrypt\",\"medium-of-exchange\",\"memes\",\"payments\",\"doggone-doggerel\",\"bnb-chain-ecosystem\",\"ftx-bankruptcy-estate\",\"made-in-america\"],\"max_supply\":null,\"circulating_supply\":148013296383.7052,\"total_supply\":148013296383.7052,\"infinite_supply\":true,\"platform\":null,\"cmc_rank\":8,\"self_reported_circulating_supply\":null,\"self_reported_market_cap\":null,\"tvl_ratio\":null,\"last_updated\":\"2025-02-12T10:20:00.000Z\",\"quote\":{\"EUR\":{\"price\":0.24507519183980525,\"volume_24h\":1335587287.5651886,\"volume_change_24h\":-3.5118,\"percent_change_1h\":0.22769632,\"percent_change_24h\":-4.23245104,\"percent_change_7d\":-4.11584542,\"percent_change_30d\":-21.29420873,\"percent_change_60d\":-37.30146224,\"percent_change_90d\":-37.11602126,\"market_cap\":36274387006.07851,\"market_cap_dominance\":1.1916,\"fully_diluted_market_cap\":36274387006.074905,\"tvl\":null,\"last_updated\":\"2025-02-12T10:19:58.000Z\"}}},{\"id\":2010,\"name\":\"Cardano\",\"symbol\":\"ADA\",\"slug\":\"cardano\",\"num_market_pairs\":1460,\"date_added\":\"2017-10-01T00:00:00.000Z\",\"tags\":[\"dpos\",\"pos\",\"platform\",\"research\",\"smart-contracts\",\"staking\",\"cardano-ecosystem\",\"cardano\",\"bnb-chain-ecosystem\",\"layer-1\",\"alleged-sec-securities\",\"2017-2018-alt-season\",\"made-in-america\"],\"max_supply\":45000000000,\"circulating_supply\":35197202831.96437,\"total_supply\":44995082706.687096,\"infinite_supply\":false,\"platform\":null,\"cmc_rank\":9,\"self_reported_circulating_supply\":null,\"self_reported_market_cap\":null,\"tvl_ratio\":null,\"last_updated\":\"2025-02-12T10:19:00.000Z\",\"quote\":{\"EUR\":{\"price\":0.7569889050766505,\"volume_24h\":1257253238.6152422,\"volume_change_24h\":-1.4329,\"percent_change_1h\":2.21151995,\"percent_change_24h\":-1.87882082,\"percent_change_7d\":4.42612229,\"percent_change_30d\":-14.58923445,\"percent_change_60d\":-28.91541693,\"percent_change_90d\":35.75679718,\"market_cap\":26643892033.52949,\"market_cap_dominance\":0.8749,\"fully_diluted_market_cap\":34064500728.448284,\"tvl\":null,\"last_updated\":\"2025-02-12T10:19:58.000Z\"}}},{\"id\":1958,\"name\":\"TRON\",\"symbol\":\"TRX\",\"slug\":\"tron\",\"num_market_pairs\":1118,\"date_added\":\"2017-09-13T00:00:00.000Z\",\"tags\":[\"media\",\"payments\",\"ethereum-ecosystem\",\"tron-ecosystem\",\"bnb-chain-ecosystem\",\"layer-1\",\"dwf-labs-portfolio\",\"alleged-sec-securities\",\"2017-2018-alt-season\",\"tron20-ecosystem\"],\"max_supply\":null,\"circulating_supply\":86102469304.41965,\"total_supply\":86102396864.17812,\"infinite_supply\":true,\"platform\":null,\"cmc_rank\":10,\"self_reported_circulating_supply\":null,\"self_reported_market_cap\":null,\"tvl_ratio\":null,\"last_updated\":\"2025-02-12T10:20:00.000Z\",\"quote\":{\"EUR\":{\"price\":0.23376281097168086,\"volume_24h\":552489879.6168429,\"volume_change_24h\":-8.2162,\"percent_change_1h\":0.55513217,\"percent_change_24h\":-1.24930708,\"percent_change_7d\":7.42604619,\"percent_change_30d\":9.21904849,\"percent_change_60d\":-17.38755587,\"percent_change_90d\":33.13565722,\"market_cap\":20127555256.204002,\"market_cap_dominance\":0.6609,\"fully_diluted_market_cap\":20127538322.373245,\"tvl\":null,\"last_updated\":\"2025-02-12T10:19:58.000Z\"}}}]}";
             System.out.println(result);
             object = new JSONObject(result);
             for (int i = 0; i < jsonListSize; i++) {
@@ -939,7 +833,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private void nextArticleBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextArticleBTNActionPerformed
         // TODO add your handling code here:
         int tagIndex = 0;
-        if (articleIndex < newsEntries.size())
+        if (articleIndex < newsEntries.size() - 1)
             articleIndex++;
         for (int i = 0; i < newsEntries.get(articleIndex).getDescription().toString().length(); i++) {
             if (newsEntries.get(articleIndex).getDescription().toString().charAt(i) == '<') {
@@ -961,6 +855,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private void chatBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chatBTNActionPerformed
         // TODO add your handling code here:
         ChatGUI chatScreen = new ChatGUI();
+        chatScreen.setName(usernameTF.getText());
         chatScreen.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_chatBTNActionPerformed
@@ -971,6 +866,27 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         tutorialScreen.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void prevArticleBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prevArticleBTNActionPerformed
+        // TODO add your handling code here:
+        int tagIndex = 0;
+        if (articleIndex > 0)
+            articleIndex--;
+        else {
+            articleIndex = 0;
+        }
+        for (int i = 0; i < newsEntries.get(articleIndex).getDescription().toString().length(); i++) {
+            if (newsEntries.get(articleIndex).getDescription().toString().charAt(i) == '<') {
+                if (newsEntries.get(articleIndex).getDescription().toString().charAt(i + 1) == 'p')
+                    if (newsEntries.get(articleIndex).getDescription().toString().charAt(i + 2) == '>')
+                        tagIndex = i;
+            }
+        }
+        String description = newsEntries.get(articleIndex).getDescription().toString().substring(tagIndex);
+        description = description.replaceAll("<p>", "");
+        description = description.replaceAll("</p>", "");
+        displayTA.setText(description);
+    }//GEN-LAST:event_prevArticleBTNActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1026,6 +942,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private javax.swing.JButton nextArticleBTN;
     private javax.swing.JLabel passwordLBL;
     private javax.swing.JPasswordField passwordPF;
+    private javax.swing.JButton prevArticleBTN;
     private javax.swing.JProgressBar progressPB;
     private javax.swing.JButton readBTN;
     private javax.swing.JButton updateBTN;
