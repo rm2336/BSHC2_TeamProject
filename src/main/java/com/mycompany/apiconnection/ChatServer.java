@@ -4,6 +4,7 @@
  */
 package com.mycompany.apiconnection;
 
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,8 +18,9 @@ import java.net.Socket;
  */
 public class ChatServer {
     private int portNumber;
+    private boolean isClicked = false;
         // TODO code application logic here
-    ChatServer(int port) {
+    ChatServer(int port, javax.swing.JTextArea output, javax.swing.JTextField msg, javax.swing.JButton button, String username) {
         portNumber = port;
         System.out.println("Running server...");
         try (
@@ -31,15 +33,32 @@ public class ChatServer {
                     new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             ) {
             String inputLine, outputLine;
-            
+            button.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    isClicked = true;
+                    System.out.println("Button clicked");
+                }
+            });   
             // Initiate conversation with client
             ChatProtocol kkp = new ChatProtocol();
             outputLine = kkp.processInput(null);
-            out.println(outputLine);
+            
+            out.println(username + ": " + outputLine);
             
             while ((inputLine = in.readLine()) != null) {
+                if (!inputLine.equals(""))
+                    output.append(inputLine + "\n");
                 outputLine = kkp.processInput(inputLine);
-                out.println(outputLine);
+                if (isClicked) {
+                    outputLine = msg.getText();
+                    msg.setText("");
+                    System.out.println(username + ": " + outputLine);
+                    output.append(username + ": " + outputLine + "\n");
+                    isClicked = false;
+                    output.getCaret().moveDot(output.getDocument().getLength());
+                }
+                out.println(username + ": " + outputLine);
                 if (outputLine.equals("Bye."))
                     break;
             }

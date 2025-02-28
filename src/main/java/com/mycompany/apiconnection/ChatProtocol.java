@@ -35,6 +35,9 @@ public class ChatProtocol {
             if (theInput.equalsIgnoreCase("Who's there?")) {
                 theOutput = clues[currentJoke];
                 state = SENTCLUE;
+            } else if (theInput.equals("")) {
+                theOutput = "No message";
+                state = SENTKNOCKKNOCK;
             } else {
                 theOutput = "You're supposed to say \"Who's there\"! " +
                         "Try again. Knock! Knock!";
@@ -44,7 +47,11 @@ public class ChatProtocol {
             if (theInput.equalsIgnoreCase(clues[currentJoke] + " who?")) {
                 theOutput = answers[currentJoke] + " Want another? (y/n)";
                 state = ANOTHER;
-            } else {
+            } else if (theInput.equals("")) {
+                theOutput = "No message";
+                state = SENTCLUE;
+            }
+            else {
                 theOutput = "You're supposed to say \"" +
                         clues[currentJoke] +
                         " who?\"" +
@@ -59,7 +66,12 @@ public class ChatProtocol {
                 else
                     currentJoke++;
                 state = SENTKNOCKKNOCK;
-            } else {
+            }
+            else if (theInput.equals("")) {
+                theOutput = "No message";
+                state = ANOTHER;
+            }
+            else {
                 theOutput = "Bye.";
                 state = WAITING;
             }

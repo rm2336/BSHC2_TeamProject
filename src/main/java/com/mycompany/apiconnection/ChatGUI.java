@@ -4,6 +4,8 @@
  */
 package com.mycompany.apiconnection;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,11 +19,16 @@ public class ChatGUI extends javax.swing.JFrame {
     private ChatClient chatClient;
     private ChatServer chatServer;
     private ChatProtocol chatProtocol;
+    private String name;
     /**
      * Creates new form ChatGUI
      */
     public ChatGUI() {
         initComponents();
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -40,7 +47,7 @@ public class ChatGUI extends javax.swing.JFrame {
         sendBTN = new javax.swing.JButton();
         modeLBL = new javax.swing.JLabel();
         serverRB = new javax.swing.JRadioButton();
-        clientBTN = new javax.swing.JRadioButton();
+        clientRB = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -50,6 +57,11 @@ public class ChatGUI extends javax.swing.JFrame {
 
         sendBTN.setText("Send");
         sendBTN.setEnabled(false);
+        sendBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendBTNActionPerformed(evt);
+            }
+        });
 
         modeLBL.setText("Mode");
 
@@ -61,11 +73,11 @@ public class ChatGUI extends javax.swing.JFrame {
             }
         });
 
-        connectionRBG.add(clientBTN);
-        clientBTN.setText("Client");
-        clientBTN.addActionListener(new java.awt.event.ActionListener() {
+        connectionRBG.add(clientRB);
+        clientRB.setText("Client");
+        clientRB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clientBTNActionPerformed(evt);
+                clientRBActionPerformed(evt);
             }
         });
 
@@ -81,7 +93,7 @@ public class ChatGUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(serverRB, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(clientBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(clientRB, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createSequentialGroup()
@@ -103,7 +115,7 @@ public class ChatGUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(modeLBL)
                     .addComponent(serverRB)
-                    .addComponent(clientBTN))
+                    .addComponent(clientRB))
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
@@ -112,20 +124,36 @@ public class ChatGUI extends javax.swing.JFrame {
 
     private void serverRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverRBActionPerformed
         // TODO add your handling code here:
-        portNumber = Integer.parseInt(JOptionPane.showInputDialog("Enter port number: "));
-        chatServer = new ChatServer(portNumber);
+        Thread serverThread = new Thread() {
+            public void run() {
+            portNumber = Integer.parseInt(JOptionPane.showInputDialog("Enter port number: "));
+            sendBTN.setEnabled(true);
+            chatServer = new ChatServer(portNumber, messageTA, messageTF, sendBTN, name);
+            }
+        };
+        serverThread.start();
     }//GEN-LAST:event_serverRBActionPerformed
 
-    private void clientBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clientBTNActionPerformed
+    private void clientRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clientRBActionPerformed
         // TODO add your handling code here:
-        IPAddress = JOptionPane.showInputDialog("Enter IP address: ");
-        portNumber = Integer.parseInt(JOptionPane.showInputDialog("Enter port number: "));
-        try {
-            chatClient = new ChatClient(portNumber, IPAddress);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }//GEN-LAST:event_clientBTNActionPerformed
+        Thread clientThread = new Thread() {
+            public void run() {
+            IPAddress = JOptionPane.showInputDialog("Enter IP address: ");
+            portNumber = Integer.parseInt(JOptionPane.showInputDialog("Enter port number: "));
+            try {
+                sendBTN.setEnabled(true);
+                chatClient = new ChatClient(portNumber, IPAddress, messageTA, messageTF, sendBTN, name);
+            } catch (Exception e) {
+                System.out.println(e);
+                }
+            }
+        };
+        clientThread.start();
+    }//GEN-LAST:event_clientRBActionPerformed
+
+    private void sendBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendBTNActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sendBTNActionPerformed
 
     /**
      * @param args the command line arguments
@@ -163,7 +191,7 @@ public class ChatGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JRadioButton clientBTN;
+    private javax.swing.JRadioButton clientRB;
     private javax.swing.ButtonGroup connectionRBG;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea messageTA;
