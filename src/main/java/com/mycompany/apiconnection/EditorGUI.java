@@ -37,6 +37,7 @@ public class EditorGUI extends javax.swing.JFrame {
         editorSB = new javax.swing.JScrollBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setName("editorFrame"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(0, 102, 255));
 

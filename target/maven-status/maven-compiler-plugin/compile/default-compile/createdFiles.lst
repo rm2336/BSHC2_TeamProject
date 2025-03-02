@@ -8,8 +8,10 @@ com\mycompany\apiconnection\CryptoChaunGUI$3.class
 com\mycompany\apiconnection\TutorialGUI.class
 com\mycompany\apiconnection\CryptoChaunGUI$1.class
 com\mycompany\apiconnection\ChatProtocol.class
+com\mycompany\apiconnection\GUIManager.class
 com\mycompany\apiconnection\CryptoChaunGUI$14.class
 com\mycompany\apiconnection\CryptoChaunGUI$13.class
+com\mycompany\apiconnection\CryptoChaunGUI$19.class
 com\mycompany\apiconnection\RSSReader.class
 com\mycompany\apiconnection\CryptoChaunGUI$5.class
 com\mycompany\apiconnection\ChatGUI$2.class
@@ -23,6 +25,7 @@ com\mycompany\apiconnection\CryptoChaunGUI$11.class
 com\mycompany\apiconnection\CryptoChaunGUI$9.class
 com\mycompany\apiconnection\EditorGUI$1.class
 com\mycompany\apiconnection\ChatGUI.class
+com\mycompany\apiconnection\MongoDBManager.class
 com\mycompany\apiconnection\LoginGUI$1.class
 com\mycompany\apiconnection\ChatClient$1.class
 com\mycompany\apiconnection\CryptoChaunGUI$7.class
