@@ -4,18 +4,8 @@
  */
 package com.mycompany.apiconnection;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoException;
-import com.mongodb.ServerApi;
-import com.mongodb.ServerApiVersion;
 import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import static com.mongodb.client.model.Filters.and;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Projections.exclude;
@@ -25,6 +15,7 @@ import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,18 +23,13 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
 import javax.swing.JFrame;
 
 import javax.swing.JOptionPane;
@@ -64,6 +50,7 @@ import org.bson.types.ObjectId;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.data.general.DefaultPieDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -76,11 +63,7 @@ import org.json.JSONPointer;
 public class CryptoChaunGUI extends javax.swing.JFrame {
     private String API_key;
     private String result;
-    private boolean isConnected = false;
-    private MongoClient mongoClient;
-    private MongoDatabase database;
-    private MongoCollection<Document> collection;
-    private MongoClientSettings settings;
+    private MongoDBManager mongoManager = new MongoDBManager();
     private ArrayList<JSONPointer> pointers = new ArrayList<>();
     private ArrayList<JSONPointer> values = new ArrayList<>();
     private ArrayList<Double> totalValues = new ArrayList<>();
@@ -88,6 +71,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private int jsonListSize = 30;
     private List<SyndEntryImpl> newsEntries;
     private int articleIndex = -1;
+    private CredentialManager credentialManager;
     /**
      * Creates new form CryptoChaunGUI
      */
@@ -96,7 +80,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         chatBTN.setVisible(false);
         
             // Load credentials if available
-    String[] savedCredentials = CredentialManager.loadCredentials();
+    String[] savedCredentials = credentialManager.loadCredentials();
     if (savedCredentials != null) {
         usernameTF.setText(savedCredentials[0]);
         passwordPF.setText(savedCredentials[1]);
@@ -209,6 +193,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         prevArticleBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setName("cryptochaunFrame"); // NOI18N
 
         backgroundJP.setBackground(new java.awt.Color(0, 102, 255));
 
@@ -377,10 +362,6 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                                             .addComponent(usernameTF))))
                                 .addGap(18, 18, Short.MAX_VALUE)
                                 .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundJPLayout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(backgroundJPLayout.createSequentialGroup()
                                         .addComponent(newsBTN)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -390,7 +371,9 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(backgroundJPLayout.createSequentialGroup()
                                         .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(backgroundJPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                             .addGroup(backgroundJPLayout.createSequentialGroup()
                                 .addGap(24, 24, 24)
@@ -548,80 +531,30 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         String clusterName = "";
         
         // Load saved credentials if available
-        String[] savedCredentials = CredentialManager.loadCredentials();
-        if(savedCredentials != null){
+        String[] savedCredentials = credentialManager.loadCredentials();
+        if(savedCredentials != null) {
             //load credentials into variables
             user = savedCredentials[0];
             password = savedCredentials[1];
             clusterName = savedCredentials[2];
-            
-//            //set it to the textfield
-//            usernameTF.setText(user);
-//            passwordPF.setText(password);
-//            clusterTF.setText(clusterName);
-        }
-        try {
-            user = URLEncoder.encode(usernameTF.getText(), "UTF-8");
-            password = URLEncoder.encode(passwordPF.getText(), "UTF-8");
-            clusterName = URLEncoder.encode(clusterTF.getText(), "UTF-8");
-            
-        }catch (UnsupportedEncodingException e) {
-            JOptionPane.showMessageDialog(null,e);
-            progressPB.setValue(0);
-        }
-        progressPB.setValue(25);
-        settings = null;
-
-        try {
-        String connectionString = "mongodb+srv://" + user + ":" + password + "@" + clusterName + ".mongodb.net/?retryWrites=true&w=majority&appName=myCluster";
-        ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-        settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(connectionString))
-                .serverApi(serverApi)
-                .build();
-        progressPB.setValue(50);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(rootPane, e);
-            progressPB.setValue(0);
         }
         
-        // Create a new client and connect to the server
-        if (settings != null) {
-            MongoClient mongoClient = MongoClients.create(settings);
-            try {
-                // Send a ping to confirm a successful connection
-                database = mongoClient.getDatabase("crypto_database");
-                database.runCommand(new Document("ping", 1));
-                collection = database.getCollection("crypto_stats");
-                progressPB.setValue(75);
-                displayTA.setText(readCollection(collection));
+        // Attempt to connect
+        mongoManager.connect(user, password, clusterName, "crypto_database", "crypto_stats");
+        
+        // Save the database backup locally
+        saveDatabaseLocally();
                 
-                // Save the database backup locally
-                saveDatabaseLocally();
+        // Save credentials after successful connection
+        credentialManager.saveCredentials(user, password, clusterName);
                 
-                progressPB.setValue(100);
-                JOptionPane.showMessageDialog(null, "Pinged your deployment. You successfully connected to MongoDB!");
-                
-                isConnected = true;
-                this.mongoClient = mongoClient;
-                
-                // Save credentials after successful connection
-                CredentialManager.saveCredentials(user, password, clusterName);
-                
-                // make chat button visible
-                chatBTN.setVisible(true);
-                
-            } catch (MongoException e) {
-                JOptionPane.showMessageDialog(null, e);
-                progressPB.setValue(0);
-            }
-        }
+        // make chat button visible
+        chatBTN.setVisible(true);
+        
     }//GEN-LAST:event_connectBTNActionPerformed
 
     public void saveDatabaseLocally() {
-        if (collection == null){
+        if (mongoManager.getCollection() == null){
             JOptionPane.showMessageDialog(null, "Not connected to MongoDB!");
             return;
         }
@@ -629,7 +562,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         // Write to "crypto_backup.json"
         try (FileWriter file = new FileWriter("crypto_backup.json")){
             // retrieves all documents from the MongoDB collection exclude("_id")
-            FindIterable<Document> output = collection.find().projection(exclude("_id"));
+            FindIterable<Document> output = mongoManager.getCollection().find().projection(exclude("_id"));
             List<Document> results = new ArrayList<>();
             output.into(results);
             
@@ -664,7 +597,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         DefaultPieDataset myPieDataset = new DefaultPieDataset();
         myPieDataset.clear();
-        FindIterable<Document> output = collection.find(new Document()).projection(exclude("_id"));
+        FindIterable<Document> output = mongoManager.getCollection().find(new Document()).projection(exclude("_id"));
         List<Document> results = new ArrayList<>();
         output.into(results);
         object = new JSONObject(result);
@@ -686,6 +619,24 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             }
         JFreeChart myChart = ChartFactory.createPieChart("My Crypto Portfolio", myPieDataset, rootPaneCheckingEnabled, rootPaneCheckingEnabled, Locale.ENGLISH);
         ChartFrame chartFrame = new ChartFrame("Chart", myChart);
+        // allow the user to save the chart as an image
+        javax.swing.JButton saveBTN = new javax.swing.JButton();
+        saveBTN.setText("Save");
+        saveBTN.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    OutputStream out = new FileOutputStream("chart.png");
+                    ChartUtilities.writeChartAsPNG(out, myChart, chartFrame.getWidth(), chartFrame.getHeight());
+                    JOptionPane.showMessageDialog(null, "Image saved to .png file.");
+                } catch (IOException ex) {
+                    System.out.println(ex);
+                }
+            }
+        });
+        chartFrame.add(saveBTN);
+        chartFrame.setLayout(null);
+        saveBTN.setBounds(chartFrame.getX(), chartFrame.getHeight(), 75, 20);
         chartFrame.setVisible(true);
         chartFrame.setSize(400, 500);
         // calculate sum of all currency values
@@ -755,7 +706,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
 
     private void createBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createBTNActionPerformed
         // TODO add your handling code here:
-        if (isConnected) {
+        if (mongoManager.isConnected()) {
             JFrame inputFrame = new JFrame();
             inputFrame.setSize(200, 200);
             javax.swing.JLabel currencyLabel = new javax.swing.JLabel();
@@ -788,18 +739,18 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             javax.swing.JTextField tField) {
             if (cBox.getSelectedIndex() != -1) {
                 String quantity = tField.getText();
-                database = mongoClient.getDatabase("crypto_database");
+                //database = mongoClient.getDatabase("crypto_database");
                 Document newCurrency = new Document("_id", new ObjectId())
                         .append("currency", cBox.getSelectedItem().toString())
                         .append("quantity", quantity);
-                InsertOneResult result = collection.insertOne(newCurrency);
+                InsertOneResult result = mongoManager.getCollection().insertOne(newCurrency);
                 BsonValue id = result.getInsertedId();
                 displayTA.setText("New document id: " + id);
             }     
     }
     private void readBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readBTNActionPerformed
         // TODO add your handling code here:
-        displayTA.setText(readCollection(collection));
+        displayTA.setText(readCollection(mongoManager.getCollection()));
     }//GEN-LAST:event_readBTNActionPerformed
 
     private void updateBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBTNActionPerformed
@@ -808,7 +759,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         String quantity = JOptionPane.showInputDialog("Enter new quantity: ");
         Bson match = eq("currency", name);
         Bson update = Updates.set("quantity", quantity);
-        UpdateResult result = collection.updateMany(match, update);
+        UpdateResult result = mongoManager.getCollection().updateMany(match, update);
         System.out.println("Modified: " + result.getModifiedCount());
     }//GEN-LAST:event_updateBTNActionPerformed
 
@@ -816,7 +767,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         String name = JOptionPane.showInputDialog("Enter coin name: ");
         Bson match = eq("currency", name);
-        DeleteResult result = collection.deleteMany(match);
+        DeleteResult result = mongoManager.getCollection().deleteMany(match);
         System.out.println("Modified: " + result.getDeletedCount());
     }//GEN-LAST:event_deleteBTNActionPerformed
 

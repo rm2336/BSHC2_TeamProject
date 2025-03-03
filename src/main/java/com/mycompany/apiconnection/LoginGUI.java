@@ -36,6 +36,7 @@ public class LoginGUI extends javax.swing.JFrame {
         quitBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setName("loginFrame"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(0, 102, 255));
 

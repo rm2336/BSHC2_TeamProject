@@ -41,6 +41,7 @@ public class SummaryGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 51, 204));
+        setName("summaryFrame"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(0, 102, 255));
 
