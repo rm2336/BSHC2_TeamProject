@@ -28,8 +28,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import javax.swing.JFrame;
 
 import javax.swing.JOptionPane;
@@ -63,7 +65,8 @@ import org.json.JSONPointer;
 public class CryptoChaunGUI extends javax.swing.JFrame {
     private String API_key;
     private String result;
-    private MongoDBManager mongoManager = new MongoDBManager();
+    private MongoDBManager mongoManager;
+    private APIManager APIManager;
     private ArrayList<JSONPointer> pointers = new ArrayList<>();
     private ArrayList<JSONPointer> values = new ArrayList<>();
     private ArrayList<Double> totalValues = new ArrayList<>();
@@ -121,11 +124,24 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
                 for (int i = 0; i < jsonListSize; i++) {
                     displayTA.append(object.query(pointers.get(i)).toString());
                     displayTA.append(" Price: €" + object.query(values.get(i)).toString() + "\n");
-                }            
+                }                        
             }       
         } catch (IOException e) {
             System.out.println(e);
         }
+    }
+    
+    public void setMongoDBManager(MongoDBManager manager) {
+        mongoManager = manager;
+    }
+    
+    public void setAPIManager(APIManager api) {
+        APIManager = api;
+        // set API Manager variables
+        APIManager.setJSONLength(jsonListSize);
+        APIManager.setObject(object);
+        APIManager.setPointers(pointers);
+        APIManager.setValues(values);
     }
     
     public void setNewsEntries(List<SyndEntryImpl> list) {
@@ -589,6 +605,8 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private void apiBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_apiBTNActionPerformed
         // TODO add your handling code here:
         API_key = JOptionPane.showInputDialog(null, "Enter your API key: ");
+        APIManager.setAPIKey(API_key);
+        
         if (API_key.equals(""))
             API_key = "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c";
     }//GEN-LAST:event_apiBTNActionPerformed
@@ -750,7 +768,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     }
     private void readBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_readBTNActionPerformed
         // TODO add your handling code here:
-        displayTA.setText(readCollection(mongoManager.getCollection()));
+        displayTA.setText(mongoManager.readRecords(mongoManager.getCollection(), APIManager.getObject(), APIManager.getJSONLength(), APIManager.getPointers(), APIManager.getValues()));
     }//GEN-LAST:event_readBTNActionPerformed
 
     private void updateBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBTNActionPerformed

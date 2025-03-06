@@ -9,14 +9,32 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Projections.exclude;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.InsertOneResult;
+import com.mongodb.client.result.UpdateResult;
+import java.awt.Dimension;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.bson.BsonValue;
 import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+import org.json.JSONObject;
+import org.json.JSONPointer;
 
 /**
  *
@@ -79,6 +97,75 @@ public class MongoDBManager {
         }
     }
     
+    // CRUD methods are defined below
+    
+    public void createRecord(int quantity, String recordName) {
+        // update record if the coin already exists
+        if (isConnected) {
+            // find quantity
+            String currentQuantity = "";
+            List<Document> results = new ArrayList<>();
+            FindIterable<Document> output = collection.find(new Document()).projection(exclude("_id"));
+            output.into(results);
+            Bson match = eq("currency", recordName);
+            for (int i = 0; i < results.size(); i++) {
+                if (results.get(i).getString("currency").equals(recordName))
+                    currentQuantity = results.get(i).getString("quantity");
+            }
+            int finalQuantity = quantity + Integer.parseInt(currentQuantity);
+            Bson update = Updates.set("quantity", String.valueOf(finalQuantity));
+            UpdateResult result = collection.updateMany(match, update);
+            System.out.println("Modified: " + result.getModifiedCount());
+            if (result.getModifiedCount() == 0) {
+                Document newCurrency = new Document("_id", new ObjectId())
+                        .append("currency", recordName)
+                        .append("quantity", quantity);
+                InsertOneResult finalResult = collection.insertOne(newCurrency);
+            }
+        }     
+    }
+    
+    public String readRecords(MongoCollection<Document> collection, JSONObject object, int objectLength, ArrayList<JSONPointer> pointers, ArrayList<JSONPointer> values) {
+        ArrayList<Double> totalValues = new ArrayList<>();
+        FindIterable<Document> output = collection.find(new Document()).projection(exclude("_id"));
+        List<Document> results = new ArrayList<>();
+        output.into(results);
+        String theData = "";
+        double price = 0;
+        for (int i = 0; i < results.size(); i++) {
+            System.out.println("i = " + i + ": " + results.get(i).getString("currency"));
+            theData += "Coin: " + results.get(i).getString("currency") + " Quantity: " +
+            results.get(i).getString("quantity") + "\n";
+            // query JSON object for price
+            if (object != null)
+            for (int j = 0; j < objectLength; j++) {
+                if (object.query(pointers.get(j).toString()).equals(results.get(i).getString("currency"))) {
+                    price = Double.valueOf(object.query(values.get(j)).toString()) * Double.valueOf(results.get(i).getString("quantity"));
+                    System.out.println("Value: " + object.query(values.get(j).toString()));
+                    System.out.println("Quantity: " + results.get(i).getString("quantity"));
+                    
+                    theData += "Total Value: €" + BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP) + "\n";
+                    totalValues.add(price);
+                }
+            }
+        }
+        return theData;
+    }
+    
+    public void updateRecord(String name, String quantity) {                                          
+        // TODO add your handling code here:
+        Bson match = eq("currency", name);
+        Bson update = Updates.set("quantity", quantity);
+        UpdateResult result = collection.updateMany(match, update);
+        System.out.println("Modified: " + result.getModifiedCount());
+    }   
+    
+    public void deleteRecord(String name) {
+        Bson match = eq("currency", name);
+        DeleteResult result = collection.deleteMany(match);
+        System.out.println("Modified: " + result.getDeletedCount());       
+    }
+       
     public boolean isConnected() {
         return isConnected;
     }
