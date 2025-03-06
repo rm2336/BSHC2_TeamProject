@@ -15,11 +15,21 @@ import java.util.logging.Logger;
  * @author rokom
  */
 public class APIConnection {
-
     public static void main(String[] args) {
+        // instantiate interface classes
+        MongoDBManager mongoDB = new MongoDBManager();
+        APIManager api = new APIManager();
+        
         GUIManager manager = new GUIManager();
+        
         CryptoChaunGUI gui = new CryptoChaunGUI();
+        gui.setMongoDBManager(mongoDB);
+        gui.setAPIManager(api);
+        
         EditorGUI editor = new EditorGUI();
+        editor.setMongoDBManager(mongoDB);
+        editor.setAPIManager(api);
+        
         LoginGUI login = new LoginGUI();
         SummaryGUI summary = new SummaryGUI();
         

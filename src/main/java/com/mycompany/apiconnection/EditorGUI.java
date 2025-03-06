@@ -4,19 +4,32 @@
  */
 package com.mycompany.apiconnection;
 
+import java.awt.Dimension;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author tombr
  */
 public class EditorGUI extends javax.swing.JFrame {
-
+    private MongoDBManager mongoManager;
+    private APIManager APIManager;
     /**
      * Creates new form EditorGUI
      */
     public EditorGUI() {
         initComponents();
     }
-
+    
+    public void setMongoDBManager(MongoDBManager mongoManager) {
+        this.mongoManager = mongoManager;
+    }
+    
+    public void setAPIManager(APIManager APIManager) {
+        this.APIManager = APIManager;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -46,10 +59,25 @@ public class EditorGUI extends javax.swing.JFrame {
         jScrollPane1.setViewportView(editorTA);
 
         addBTN.setText("Add");
+        addBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addBTNActionPerformed(evt);
+            }
+        });
 
         updateBTN.setText("Update");
+        updateBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateBTNActionPerformed(evt);
+            }
+        });
 
         deleteBTN.setText("Delete");
+        deleteBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBTNActionPerformed(evt);
+            }
+        });
 
         backBTN.setText("Back");
 
@@ -126,6 +154,61 @@ public class EditorGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void addBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBTNActionPerformed
+        // TODO add your handling code here:
+      JFrame inputFrame = new JFrame();
+        inputFrame.setSize(200, 200);
+        javax.swing.JLabel currencyLabel = new javax.swing.JLabel();
+        javax.swing.JButton confirmButton = new javax.swing.JButton();
+        javax.swing.JTextField currencyTF = new javax.swing.JTextField();
+        javax.swing.JComboBox currencyCBox = new javax.swing.JComboBox();
+        javax.swing.JPanel backgroundJP = new javax.swing.JPanel();
+        for (int i = 0; i < APIManager.getJSONLength(); i++) {
+            currencyCBox.addItem(APIManager.getObject().query(APIManager.getPointers().get(i)));
+        }
+        confirmButton.setText("Confirm");
+        currencyLabel.setText("Select currency: ");
+        inputFrame.add(backgroundJP);
+        backgroundJP.add(currencyLabel);
+        backgroundJP.add(currencyCBox);
+        backgroundJP.add(currencyTF);
+        backgroundJP.add(confirmButton);
+        currencyTF.setPreferredSize(new Dimension(100, 50));
+        confirmButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confirmBTNActionPerformed(evt, currencyCBox, currencyTF);
+                inputFrame.dispose();
+            }
+        });
+        inputFrame.setVisible(true);
+    }//GEN-LAST:event_addBTNActionPerformed
+
+    private void updateBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBTNActionPerformed
+        // TODO add your handling code here:
+        String name = JOptionPane.showInputDialog("Enter coin name: ");
+        String quantity = JOptionPane.showInputDialog("Enter new quantity: ");
+        mongoManager.updateRecord(name, quantity);
+        refreshDisplay();
+    }//GEN-LAST:event_updateBTNActionPerformed
+
+    private void deleteBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBTNActionPerformed
+        // TODO add your handling code here:
+        String name = JOptionPane.showInputDialog("Enter coin name: ");
+        mongoManager.deleteRecord(name);
+        refreshDisplay();
+    }//GEN-LAST:event_deleteBTNActionPerformed
+
+    public void confirmBTNActionPerformed(java.awt.event.ActionEvent evt, javax.swing.JComboBox cBox,
+            javax.swing.JTextField tField) {
+        mongoManager.createRecord(Integer.parseInt(tField.getText()), cBox.getSelectedItem().toString());
+        refreshDisplay();
+    }
+    
+    public void refreshDisplay() {
+        editorTA.setText(mongoManager.readRecords(mongoManager.getCollection(), APIManager.getObject(), APIManager.getJSONLength()
+            ,APIManager.getPointers(), APIManager.getValues()));
+        System.out.println(APIManager.getPointers());
+    }
     /**
      * @param args the command line arguments
      */

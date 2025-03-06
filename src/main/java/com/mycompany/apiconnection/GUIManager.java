@@ -30,6 +30,9 @@ public class GUIManager {
                 currentFrame.setVisible(false);
                 frame.setLocation(currentFrame.getLocation());
                 currentFrame = frame;
+                // refresh editor menu if meant to load
+                if (frame instanceof EditorGUI)
+                    ((EditorGUI) frame).refreshDisplay();
                 }
                 else
                     currentFrame = frame;
