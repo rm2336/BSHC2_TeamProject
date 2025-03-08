@@ -33,7 +33,7 @@ public class APIManager {
     private JSONObject object;
     private ArrayList<JSONPointer> pointers;
     private ArrayList<JSONPointer> values;
-    private int JSONLength;
+    private int JSONLength = 30;
     
     APIManager() {
         
@@ -123,6 +123,15 @@ public class APIManager {
         catch (URISyntaxException e) {
             System.out.println(e);
         } 
+    }
+    
+    public String getPrices() {
+        String result = "";
+        for (int i = 0; i < JSONLength; i++) {
+                result += object.query(pointers.get(i)).toString();
+                result += ": €" + object.query(values.get(i)).toString() + "\n";
+            }
+        return result;
     }
 
     public String getAPIKey() {

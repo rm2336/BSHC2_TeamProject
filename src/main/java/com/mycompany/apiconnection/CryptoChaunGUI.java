@@ -697,7 +697,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
             displayTA.setText("");
             for (int i = 0; i < jsonListSize; i++) {
                 displayTA.append(object.query(pointers.get(i)).toString());
-                displayTA.append(" Price: €" + object.query(values.get(i)).toString() + "\n");
+                displayTA.append(": €" + object.query(values.get(i)).toString() + "\n");
             }
             // write the results to a file
             try {

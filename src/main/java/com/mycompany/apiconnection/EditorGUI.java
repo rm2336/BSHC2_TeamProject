@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 public class EditorGUI extends javax.swing.JFrame {
     private MongoDBManager mongoManager;
     private APIManager APIManager;
+    private GUIManager guiManager;
     /**
      * Creates new form EditorGUI
      */
@@ -28,6 +29,10 @@ public class EditorGUI extends javax.swing.JFrame {
     
     public void setAPIManager(APIManager APIManager) {
         this.APIManager = APIManager;
+    }
+    
+    public void setGUIManager(GUIManager guiManager) {
+        this.guiManager = guiManager;
     }
     
     /**
@@ -80,6 +85,11 @@ public class EditorGUI extends javax.swing.JFrame {
         });
 
         backBTN.setText("Back");
+        backBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backBTNActionPerformed(evt);
+            }
+        });
 
         editorLBL.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         editorLBL.setForeground(new java.awt.Color(255, 255, 255));
@@ -197,6 +207,11 @@ public class EditorGUI extends javax.swing.JFrame {
         mongoManager.deleteRecord(name);
         refreshDisplay();
     }//GEN-LAST:event_deleteBTNActionPerformed
+
+    private void backBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBTNActionPerformed
+        // TODO add your handling code here:
+        guiManager.loadFrame("summaryFrame");
+    }//GEN-LAST:event_backBTNActionPerformed
 
     public void confirmBTNActionPerformed(java.awt.event.ActionEvent evt, javax.swing.JComboBox cBox,
             javax.swing.JTextField tField) {

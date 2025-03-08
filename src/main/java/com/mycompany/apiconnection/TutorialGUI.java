@@ -10,11 +10,16 @@ package com.mycompany.apiconnection;
  */
 public class TutorialGUI extends javax.swing.JFrame {
 
+    private GUIManager guiManager;
     /**
      * Creates new form TutorialGUI
      */
     public TutorialGUI() {
         initComponents();
+    }
+    
+    public void setGUIManager(GUIManager guiManager) {
+        this.guiManager = guiManager;
     }
 
     /**
@@ -30,11 +35,13 @@ public class TutorialGUI extends javax.swing.JFrame {
         tutorialLBL = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        backBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("tutorialFrame"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(0, 102, 255));
+        jPanel1.setName("tutorialFrame"); // NOI18N
 
         tutorialLBL.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
         tutorialLBL.setForeground(new java.awt.Color(255, 255, 255));
@@ -48,20 +55,28 @@ public class TutorialGUI extends javax.swing.JFrame {
         jTextArea1.setWrapStyleWord(true);
         jTextArea1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         jScrollPane1.setViewportView(jTextArea1);
-        jTextArea1.getAccessibleContext().setAccessibleParent(null);
+
+        backBTN.setText("Back");
+        backBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backBTNActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1030, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(tutorialLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(455, 455, 455))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1030, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(backBTN))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -70,7 +85,9 @@ public class TutorialGUI extends javax.swing.JFrame {
                 .addComponent(tutorialLBL)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(backBTN)
+                .addContainerGap(7, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -86,6 +103,11 @@ public class TutorialGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void backBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBTNActionPerformed
+        // TODO add your handling code here:
+        guiManager.loadFrame("summaryFrame");
+    }//GEN-LAST:event_backBTNActionPerformed
 
     /**
      * @param args the command line arguments
@@ -123,6 +145,7 @@ public class TutorialGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backBTN;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;

@@ -4,17 +4,44 @@
  */
 package com.mycompany.apiconnection;
 
+import com.mongodb.client.FindIterable;
+import static com.mongodb.client.model.Projections.exclude;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import org.bson.Document;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  *
  * @author tombr
  */
 public class LoginGUI extends javax.swing.JFrame {
 
+    private MongoDBManager mongoManager;
+    private CredentialManager credentialManager;
+    private String user, password, clusterName;
+    private GUIManager guiManager;
     /**
      * Creates new form LoginGUI
      */
     public LoginGUI() {
         initComponents();
+    }
+
+    public void setMongoManager(MongoDBManager mongoManager) {
+        this.mongoManager = mongoManager;
+    }
+
+    public void setCredentialManager(CredentialManager credentialManager) {
+        this.credentialManager = credentialManager;
+    }
+    
+    public void setGUIManager(GUIManager guiManager) {
+        this.guiManager = guiManager;
     }
 
     /**
@@ -31,9 +58,9 @@ public class LoginGUI extends javax.swing.JFrame {
         userLBL = new javax.swing.JLabel();
         passwordLBL = new javax.swing.JLabel();
         userTF = new javax.swing.JTextField();
-        passwordTF = new javax.swing.JTextField();
         loginBTN = new javax.swing.JButton();
         quitBTN = new javax.swing.JButton();
+        passwordPF = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("loginFrame"); // NOI18N
@@ -55,9 +82,12 @@ public class LoginGUI extends javax.swing.JFrame {
 
         userTF.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        passwordTF.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
         loginBTN.setText("Login");
+        loginBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginBTNActionPerformed(evt);
+            }
+        });
 
         quitBTN.setText("Quit");
 
@@ -79,7 +109,7 @@ public class LoginGUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(userTF, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-                            .addComponent(passwordTF))
+                            .addComponent(passwordPF))
                         .addGap(27, 27, 27))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(loginBTN)
@@ -99,7 +129,7 @@ public class LoginGUI extends javax.swing.JFrame {
                 .addGap(61, 61, 61)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(passwordLBL)
-                    .addComponent(passwordTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(passwordPF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(loginBTN)
@@ -127,6 +157,61 @@ public class LoginGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void loginBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBTNActionPerformed
+      
+        // Attempt to connect
+        mongoManager.connect(user, password, clusterName, "crypto_database", "crypto_stats");
+        
+        // Save the database backup locally
+        saveDatabaseLocally();
+                
+        // Save credentials after successful connection
+        credentialManager.saveCredentials(user, password, clusterName);
+                                 
+        // Navigate to login page
+        guiManager.loadFrame("summaryFrame");
+    }//GEN-LAST:event_loginBTNActionPerformed
+
+public void loadSavedCredentials() {
+        // Load saved credentials if available
+        String[] savedCredentials = credentialManager.loadCredentials();
+        if(savedCredentials != null) {
+            //load credentials into variables
+            user = savedCredentials[0];
+            password = savedCredentials[1];
+            clusterName = savedCredentials[2];
+        }
+        
+        userTF.setText(user);
+        passwordPF.setText(password);
+}
+public void saveDatabaseLocally() {
+        if (mongoManager.getCollection() == null){
+            JOptionPane.showMessageDialog(null, "Not connected to MongoDB!");
+            return;
+        }
+      
+        // Write to "crypto_backup.json"
+        try (FileWriter file = new FileWriter("crypto_backup.json")){
+            // retrieves all documents from the MongoDB collection exclude("_id")
+            FindIterable<Document> output = mongoManager.getCollection().find().projection(exclude("_id"));
+            List<Document> results = new ArrayList<>();
+            output.into(results);
+            
+            // Initializes a new JSONArray
+            JSONArray jsonArray = new JSONArray();
+            for (Document doc : results){
+                jsonArray.put(new JSONObject(doc.toJson()));
+            }
+            
+            file.write(jsonArray.toString(4));
+            file.flush();
+            JOptionPane.showMessageDialog(null, "Database backup saved successfully!");
+            
+        }catch (IOException e){
+            JOptionPane.showMessageDialog(null, "Error saving database: " + e.getMessage());
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -166,7 +251,7 @@ public class LoginGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton loginBTN;
     private javax.swing.JLabel passwordLBL;
-    private javax.swing.JTextField passwordTF;
+    private javax.swing.JPasswordField passwordPF;
     private javax.swing.JButton quitBTN;
     private javax.swing.JLabel titleLBL;
     private javax.swing.JLabel userLBL;

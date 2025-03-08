@@ -22,6 +22,10 @@ public class GUIManager {
         frameList.add(frame);
     }
     
+    public ArrayList<javax.swing.JFrame> getFrameList() {
+        return frameList;
+    }
+    
     public void loadFrame(String nextFrame) {
         // run a loop that searches for the next frame
         for (javax.swing.JFrame frame : frameList) {
@@ -33,9 +37,12 @@ public class GUIManager {
                 // refresh editor menu if meant to load
                 if (frame instanceof EditorGUI)
                     ((EditorGUI) frame).refreshDisplay();
+                else if (frame instanceof SummaryGUI)
+                    ((SummaryGUI) frame).loadNews();
                 }
-                else
-                    currentFrame = frame;
+                else if (frame instanceof LoginGUI)
+                    ((LoginGUI) frame).loadSavedCredentials();
+                currentFrame = frame;
                 frame.setVisible(true);
             }
         }      
