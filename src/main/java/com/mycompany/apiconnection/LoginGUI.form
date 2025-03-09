@@ -68,7 +68,7 @@
                           <EmptySpace pref="90" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="userTF" pref="132" max="32767" attributes="0"/>
-                              <Component id="passwordTF" max="32767" attributes="0"/>
+                              <Component id="passwordPF" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                       </Group>
@@ -95,7 +95,7 @@
                   <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="passwordLBL" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="passwordTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="passwordPF" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="50" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -147,20 +147,20 @@
             <Property name="horizontalAlignment" type="int" value="0"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="passwordTF">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="0"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JButton" name="loginBTN">
           <Properties>
             <Property name="text" type="java.lang.String" value="Login"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loginBTNActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="quitBTN">
           <Properties>
             <Property name="text" type="java.lang.String" value="Quit"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JPasswordField" name="passwordPF">
         </Component>
       </SubComponents>
     </Container>
