@@ -38,6 +38,7 @@ public class TutorialGUI extends javax.swing.JFrame {
         backBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Cryptochaun");
         setName("tutorialFrame"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(0, 102, 255));

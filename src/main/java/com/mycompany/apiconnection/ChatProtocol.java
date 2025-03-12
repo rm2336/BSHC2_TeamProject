@@ -52,10 +52,11 @@ public class ChatProtocol {
                 state = SENTCLUE;
             }
             else {
-                theOutput = "You're supposed to say \"" +
-                        clues[currentJoke] +
-                        " who?\"" +
-                        "! Try again. Knock! Knock!";
+//                theOutput = "You're supposed to say \"" +
+//                        clues[currentJoke] +
+//                        " who?\"" +
+//                        "! Try again. Knock! Knock!";
+                theOutput = "Received a message.";
                 state = SENTKNOCKKNOCK;
             }
         } else if (state == ANOTHER) {

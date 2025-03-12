@@ -28,7 +28,7 @@ public class ChatGUI extends javax.swing.JFrame {
         initComponents();
     }
     
-    public void setName(String name) {
+    public void setUsername(String name) {
         this.name = name;
     }
     
@@ -56,6 +56,7 @@ public class ChatGUI extends javax.swing.JFrame {
         backBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Cryptochaun");
         setName("chatFrame"); // NOI18N
 
         messageTA.setColumns(20);
@@ -182,6 +183,7 @@ public class ChatGUI extends javax.swing.JFrame {
 
     private void backBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBTNActionPerformed
         // TODO add your handling code here:
+        guiManager.loadFrame("summaryFrame");
     }//GEN-LAST:event_backBTNActionPerformed
 
     /**
