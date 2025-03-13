@@ -106,6 +106,7 @@ public class SummaryGUI extends javax.swing.JFrame {
         helpMI = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Cryptochaun");
         setBackground(new java.awt.Color(0, 51, 204));
         setName("summaryFrame"); // NOI18N
 
@@ -558,6 +559,10 @@ public class SummaryGUI extends javax.swing.JFrame {
     private void chatMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chatMIActionPerformed
         // TODO add your handling code here:
         guiManager.loadFrame("chatFrame");
+        LoginGUI loginScreen = (LoginGUI)guiManager.getFrame("loginFrame");
+        String username = loginScreen.getUser();
+        ChatGUI myChat = (ChatGUI)guiManager.getFrame("chatFrame");
+        myChat.setUsername(username);
     }//GEN-LAST:event_chatMIActionPerformed
 
     private void pricesMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pricesMIActionPerformed

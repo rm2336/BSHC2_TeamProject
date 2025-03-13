@@ -55,6 +55,7 @@ public class EditorGUI extends javax.swing.JFrame {
         editorSB = new javax.swing.JScrollBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Cryptochaun");
         setName("editorFrame"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(0, 102, 255));
@@ -215,7 +216,7 @@ public class EditorGUI extends javax.swing.JFrame {
 
     public void confirmBTNActionPerformed(java.awt.event.ActionEvent evt, javax.swing.JComboBox cBox,
             javax.swing.JTextField tField) {
-        mongoManager.createRecord(Integer.parseInt(tField.getText()), cBox.getSelectedItem().toString());
+        mongoManager.createRecord(Float.parseFloat(tField.getText()), cBox.getSelectedItem().toString());
         refreshDisplay();
     }
     

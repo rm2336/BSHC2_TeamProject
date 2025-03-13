@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
 
 /**
  *
@@ -22,7 +23,7 @@ public class APIConnection {
         CredentialManager credentialManager = new CredentialManager();
         
         GUIManager manager = new GUIManager();
-        
+              
         CryptoChaunGUI gui = new CryptoChaunGUI();
         gui.setMongoDBManager(mongoDB);
         gui.setAPIManager(api);
@@ -36,6 +37,7 @@ public class APIConnection {
         login.setCredentialManager(credentialManager);
         login.setMongoManager(mongoDB);
         login.setGUIManager(manager);
+        
         
         SummaryGUI summary = new SummaryGUI();
         summary.setAPIManager(api);

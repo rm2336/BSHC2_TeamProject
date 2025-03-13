@@ -26,6 +26,14 @@ public class GUIManager {
         return frameList;
     }
     
+    public javax.swing.JFrame getFrame(String name) {
+        for (javax.swing.JFrame frame : frameList) {
+            if (frame.getName().equals(name))
+                return frame;
+        }
+        return null;
+    }
+    
     public void loadFrame(String nextFrame) {
         // run a loop that searches for the next frame
         for (javax.swing.JFrame frame : frameList) {

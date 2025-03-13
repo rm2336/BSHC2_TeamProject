@@ -824,7 +824,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
     private void chatBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chatBTNActionPerformed
         // TODO add your handling code here:
         ChatGUI chatScreen = new ChatGUI();
-        chatScreen.setName(usernameTF.getText());
+        chatScreen.setUsername(usernameTF.getText());
         chatScreen.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_chatBTNActionPerformed

@@ -9,6 +9,7 @@ import static com.mongodb.client.model.Projections.exclude;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
 import org.bson.Document;
@@ -30,6 +31,10 @@ public class LoginGUI extends javax.swing.JFrame {
      */
     public LoginGUI() {
         initComponents();
+    }
+    
+    public String getUser() {
+        return user;
     }
 
     public void setMongoManager(MongoDBManager mongoManager) {
@@ -63,6 +68,7 @@ public class LoginGUI extends javax.swing.JFrame {
         passwordPF = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Cryptochaun");
         setName("loginFrame"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(0, 102, 255));
@@ -160,7 +166,7 @@ public class LoginGUI extends javax.swing.JFrame {
     private void loginBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBTNActionPerformed
       
         // Attempt to connect
-        mongoManager.connect(user, password, clusterName, "crypto_database", "crypto_stats");
+        mongoManager.connect(userTF.getText(), passwordPF.getText(), "mycluster.eqvxj", "crypto_database", userTF.getText());
         
         // Save the database backup locally
         saveDatabaseLocally();
@@ -169,7 +175,10 @@ public class LoginGUI extends javax.swing.JFrame {
         credentialManager.saveCredentials(user, password, clusterName);
                                  
         // Navigate to login page
-        guiManager.loadFrame("summaryFrame");
+        if (mongoManager.isConnected()) {
+            guiManager.loadFrame("summaryFrame");
+            user = userTF.getText();
+        }
     }//GEN-LAST:event_loginBTNActionPerformed
 
 public void loadSavedCredentials() {

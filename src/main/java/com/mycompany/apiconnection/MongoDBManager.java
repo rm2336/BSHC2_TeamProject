@@ -99,7 +99,7 @@ public class MongoDBManager {
     
     // CRUD methods are defined below
     
-    public void createRecord(int quantity, String recordName) {
+    public void createRecord(float quantity, String recordName) {
         // update record if the coin already exists
         if (isConnected) {
             // find quantity
@@ -112,14 +112,16 @@ public class MongoDBManager {
                 if (results.get(i).getString("currency").equals(recordName))
                     currentQuantity = results.get(i).getString("quantity");
             }
-            int finalQuantity = quantity + Integer.parseInt(currentQuantity);
+            if (currentQuantity.equals(""))
+                currentQuantity = "0";
+            float finalQuantity = quantity + Float.parseFloat(currentQuantity);
             Bson update = Updates.set("quantity", String.valueOf(finalQuantity));
             UpdateResult result = collection.updateMany(match, update);
             System.out.println("Modified: " + result.getModifiedCount());
             if (result.getModifiedCount() == 0) {
                 Document newCurrency = new Document("_id", new ObjectId())
                         .append("currency", recordName)
-                        .append("quantity", quantity);
+                        .append("quantity", String.valueOf(finalQuantity));
                 InsertOneResult finalResult = collection.insertOne(newCurrency);
             }
         }     
