@@ -556,7 +556,7 @@ public class CryptoChaunGUI extends javax.swing.JFrame {
         }
         
         // Attempt to connect
-        mongoManager.connect(user, password, clusterName, "crypto_database", "crypto_stats");
+        mongoManager.connect(user, password, clusterName, "crypto_database", "crypto_stats", true);
         
         // Save the database backup locally
         saveDatabaseLocally();
