@@ -36,6 +36,10 @@ public class LoginGUI extends javax.swing.JFrame {
     public String getUser() {
         return user;
     }
+    
+    public String getPassword() {
+        return passwordPF.getText();
+    }
 
     public void setMongoManager(MongoDBManager mongoManager) {
         this.mongoManager = mongoManager;
@@ -166,7 +170,7 @@ public class LoginGUI extends javax.swing.JFrame {
     private void loginBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBTNActionPerformed
       
         // Attempt to connect
-        mongoManager.connect(userTF.getText(), passwordPF.getText(), "mycluster.eqvxj", "crypto_database", userTF.getText());
+        mongoManager.connect(userTF.getText(), passwordPF.getText(), "mycluster.eqvxj", "crypto_database", userTF.getText(), true);
         
         // Save the database backup locally
         saveDatabaseLocally();

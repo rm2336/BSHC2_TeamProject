@@ -187,7 +187,7 @@ public class SummaryGUI extends javax.swing.JFrame {
             }
         });
 
-        modeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "News", "Prices" }));
+        modeCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "News", "Prices", "Leaderboard" }));
         modeCB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 modeCBActionPerformed(evt);
@@ -486,8 +486,19 @@ public class SummaryGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (modeCB.getSelectedItem().equals("News"))
             loadNews();
-        if (modeCB.getSelectedItem().equals("Prices"))
+        else if (modeCB.getSelectedItem().equals("Prices"))
             summaryTA.setText(apiManager.getPrices());
+        else if (modeCB.getSelectedItem().equals("Leaderboard")) {
+            // connect to the leaderboard and add the user's timestamp to the
+            // collection
+            MongoDBManager leaderboardConnection = new MongoDBManager();
+            leaderboardConnection.connect(((LoginGUI)guiManager.getFrame("loginFrame")).getUser(), ((LoginGUI)guiManager.getFrame("loginFrame")).getPassword()
+                    ,"mycluster.eqvxj", "leaderboard_database", "leaderboard", false);
+            if (leaderboardConnection.isConnected()) {
+                leaderboardConnection.updateLeaderboard(((LoginGUI)guiManager.getFrame("loginFrame")).getUser());
+                summaryTA.setText(leaderboardConnection.readLeaderboard());
+            }
+        }
     }//GEN-LAST:event_modeCBActionPerformed
 
     private void helpMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpMIActionPerformed

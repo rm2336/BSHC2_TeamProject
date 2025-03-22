@@ -25,7 +25,9 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -52,7 +54,7 @@ public class MongoDBManager {
     MongoDBManager() {
         
     }
-    public void connect(String username, String password, String cluster, String databaseName, String collectionName) {
+    public void connect(String username, String password, String cluster, String databaseName, String collectionName, boolean notify) {
         // connect to MongoDB
         
         try {
@@ -87,7 +89,8 @@ public class MongoDBManager {
                 database.runCommand(new Document("ping", 1));
                 collection = database.getCollection(collectionName);
                
-                JOptionPane.showMessageDialog(null, "Pinged your deployment. You successfully connected to MongoDB!");
+                if (notify)
+                    JOptionPane.showMessageDialog(null, "Pinged your deployment. You successfully connected to MongoDB!");
                 
                 isConnected = true;
                 
@@ -166,6 +169,36 @@ public class MongoDBManager {
         Bson match = eq("currency", name);
         DeleteResult result = collection.deleteMany(match);
         System.out.println("Modified: " + result.getDeletedCount());       
+    }
+    
+    // add the user's timestamp to the collection if not recorded,
+    // otherwise update it
+    public void updateLeaderboard(String username) {
+        FindIterable<Document> output = collection.find(new Document()).projection(exclude("_id"));
+        List<Document> results = new ArrayList<>();
+        output.into(results);
+        Bson match = eq("username", username);
+        Bson update = Updates.set("last logged in", Calendar.getInstance().getTime().toString());
+        UpdateResult result = collection.updateOne(match, update);
+        if (result.getModifiedCount() == 0) {
+            // create new record
+            Document newTimestamp = new Document("_id", new ObjectId())
+                    .append("username", username)
+                    .append("last logged in", Calendar.getInstance().getTime().toString());
+            collection.insertOne(newTimestamp);
+        }
+    }
+    
+    public String readLeaderboard() {
+        String result = "";
+        FindIterable<Document> output = collection.find(new Document()).projection(exclude("_id"));
+        List<Document> results = new ArrayList<>();
+        output.into(results);
+        for (int i = 0; i < results.size(); i++) {
+            result += results.get(i).getString("username");
+            result += " - Last seen on " + results.get(i).getString("last logged in") + "\n";
+        }
+        return result;
     }
        
     public boolean isConnected() {
