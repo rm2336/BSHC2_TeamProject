@@ -357,48 +357,26 @@ public class SummaryGUI extends javax.swing.JFrame {
     private void prevBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prevBTNActionPerformed
         // TODO add your handling code here:
         modeCB.setSelectedItem("News");
-        int tagIndex = 0;
         if (articleIndex > 0)
             articleIndex--;
         else {
             articleIndex = 0;
         }
-        for (int i = 0; i < newsEntries.get(articleIndex).getDescription().toString().length(); i++) {
-            if (newsEntries.get(articleIndex).getDescription().toString().charAt(i) == '<') {
-                if (newsEntries.get(articleIndex).getDescription().toString().charAt(i + 1) == 'p')
-                    if (newsEntries.get(articleIndex).getDescription().toString().charAt(i + 2) == '>')
-                        tagIndex = i;
-            }
-        }
-        String headline = newsEntries.get(articleIndex).getTitle();
-        String date = newsEntries.get(articleIndex).getPublishedDate().toString();
-        String description = newsEntries.get(articleIndex).getDescription().toString().substring(tagIndex);
-        description = description.replaceAll("<p>", "");
-        description = description.replaceAll("</p>", "");
-        summaryTA.setText(headline + "\n" + date + "\n" + description);
-        summaryTA.getCaret().moveDot(0);
+        NewsGUI news = new NewsGUI();
+        news.setNewsFeed(newsEntries);
+        news.readNews(articleIndex);
+        news.setVisible(true);
     }//GEN-LAST:event_prevBTNActionPerformed
 
     private void nextBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextBTNActionPerformed
         // TODO add your handling code here:
         modeCB.setSelectedItem("News");
-        int tagIndex = 0;
         if (articleIndex < newsEntries.size() - 1)
             articleIndex++;
-        for (int i = 0; i < newsEntries.get(articleIndex).getDescription().toString().length(); i++) {
-            if (newsEntries.get(articleIndex).getDescription().toString().charAt(i) == '<') {
-                if (newsEntries.get(articleIndex).getDescription().toString().charAt(i + 1) == 'p')
-                    if (newsEntries.get(articleIndex).getDescription().toString().charAt(i + 2) == '>')
-                        tagIndex = i;
-            }
-        }
-        String headline = newsEntries.get(articleIndex).getTitle();
-        String date = newsEntries.get(articleIndex).getPublishedDate().toString();
-        String description = newsEntries.get(articleIndex).getDescription().toString().substring(tagIndex);
-        description = description.replaceAll("<p>", "");
-        description = description.replaceAll("</p>", "");
-        summaryTA.setText(headline + "\n" + date + "\n" + description);
-        summaryTA.getCaret().moveDot(0);
+        NewsGUI news = new NewsGUI();
+        news.setNewsFeed(newsEntries);
+        news.readNews(articleIndex);
+        news.setVisible(true);
     }//GEN-LAST:event_nextBTNActionPerformed
 
     private void databaseBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_databaseBTNActionPerformed
