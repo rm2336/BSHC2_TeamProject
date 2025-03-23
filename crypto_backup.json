@@ -1,14 +1,4 @@
-[
-    {
-        "quantity": "0.61",
-        "currency": "Bitcoin"
-    },
-    {
-        "quantity": "1000000",
-        "currency": "Tether USDt"
-    },
-    {
-        "quantity": "200",
-        "currency": "Ethereum"
-    }
-]
+[{
+    "quantity": "200.0",
+    "currency": "Tether USDt"
+}]
