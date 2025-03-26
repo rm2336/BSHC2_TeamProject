@@ -30,14 +30,18 @@ public class ChatClient {
     private String hostName;
     private String fromUser;
     private String fromServer;
-    boolean isClicked = false;
+    private boolean isClicked = false;
+    private boolean sharedPortfolio = false;
+    private boolean readFirstLine = false;
     private PrintWriter out;
     private BufferedReader in;
     private BufferedReader stdIn;
+    
     /**
      * @param args the command line arguments
      */
-    ChatClient(int port, String host, javax.swing.JTextArea output, javax.swing.JTextField msg, javax.swing.JButton button, String username) throws IOException {
+    ChatClient(int port, String host, javax.swing.JTextArea output, javax.swing.JTextField msg, javax.swing.JButton button, String username,
+            javax.swing.JMenuItem sharePortfolio, MongoDBManager mongoManager, APIManager apiManager, GUIManager guiManager) throws IOException {
         // TODO code application logic here
         portNumber = port;
         hostName = host;
@@ -54,15 +58,22 @@ public class ChatClient {
                     System.out.println("Button clicked");
                 }
             });
+            // add listener to the share portfolio menu item
+            sharePortfolio.addActionListener((ActionEvent e) -> {
+                sharedPortfolio = true;
+                System.out.println("Share portfolio button clicked.");
+            });
             while ((fromServer = in.readLine()) != null) {
-                if (fromServer.equals("Bye."))
-                    break;
                 
                 fromUser = "";
 
-                if (!fromServer.contains("No message")) {
-                    System.out.println(fromServer);
-                    output.append(fromServer  + "\n");
+                if (fromServer.startsWith("Message: ")) {
+                    System.out.println(fromServer.substring(9));
+                    output.append(fromServer.substring(9) + "\n");
+                }
+                else if (fromServer.startsWith("Portfolio: ")) {
+                    ((ChatGUI)guiManager.getFrame("chatFrame")).drawOfflineChart(fromServer);
+                    output.append(fromServer.substring(11) + "\n");
                 }
                 if (isClicked) {
                     fromUser = msg.getText();
@@ -72,11 +83,26 @@ public class ChatClient {
                     isClicked = false;
                     output.getCaret().moveDot(output.getDocument().getLength());
                 }
-                
-                if (!fromUser.equals(""))
-                    out.println(username + ": " + fromUser);
+                else if (sharedPortfolio) {
+                    fromUser = (mongoManager.getPortfolioLine(mongoManager.getCollection(),
+                            apiManager.getObject(), apiManager.getJSONLength(),
+                            apiManager.getPointers(), apiManager.getValues()));
+                    System.out.println("JSON Length: " + apiManager.getJSONLength());
+                    System.out.println("Records:" + mongoManager.readRecords(mongoManager.getCollection(),
+                            apiManager.getObject(), apiManager.getJSONLength(),
+                            apiManager.getPointers(), apiManager.getValues()));
+                    output.append("Sharing portfolio...\n");
+                }
+                if (!fromUser.equals("")) {
+                    if (sharedPortfolio) {
+                    sharedPortfolio = false;
+                    out.println("Portfolio: " + username + ": " + fromUser);
+                    }
+                    else
+                        out.println("Message: " + username + ": " + fromUser);
+                }
                 else
-                    out.println(fromUser);
+                    out.println("0");
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host: " + hostName);

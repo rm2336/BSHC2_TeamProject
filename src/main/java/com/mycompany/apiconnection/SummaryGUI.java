@@ -36,12 +36,14 @@ public class SummaryGUI extends javax.swing.JFrame {
     private GUIManager guiManager;
     private APIManager apiManager;
     private MongoDBManager mongoManager;
+    private MongoDBManager leaderboardConnection;
     private ArrayList<Double> totalValues = new ArrayList<>();
     /**
      * Creates new form SummaryGUI
      */
     public SummaryGUI() {
         initComponents();
+        leaderboardConnection = new MongoDBManager();
     }
     
     public void setNewsEntries(List<SyndEntryImpl> list) {
@@ -67,6 +69,140 @@ public class SummaryGUI extends javax.swing.JFrame {
             summaryTA.append(newsEntries.get(i).getPublishedDate() + "\n\n");
         }
         summaryTA.getCaret().moveDot(0);
+        leaderboardConnection.connect(((LoginGUI)guiManager.getFrame("loginFrame")).getUser(), ((LoginGUI)guiManager.getFrame("loginFrame")).getPassword()
+                ,"mycluster.eqvxj", "leaderboard_database", "leaderboard", false);
+        if (leaderboardConnection.isConnected())
+            leaderboardConnection.updateLeaderboard(((LoginGUI)guiManager.getFrame("loginFrame")).getUser());
+    }
+    
+    public void drawChart() {
+        DefaultPieDataset myPieDataset = new DefaultPieDataset();
+        myPieDataset.clear();
+        FindIterable<Document> output = mongoManager.getCollection().find(new Document()).projection(exclude("_id"));
+        List<Document> results = new ArrayList<>();
+        output.into(results);
+        // refresh values
+        totalValues.clear();
+        double price;
+        if (apiManager.getObject() != null) {
+            for (int i = 0; i < results.size(); i++) {
+                for (int j = 0; j < apiManager.getJSONLength(); j++) {
+                    if (apiManager.getObject().query(apiManager.getPointers().get(j).toString()).equals(results.get(i).getString("currency"))) {
+                        price = Double.valueOf(apiManager.getObject().query(apiManager.getValues().get(j)).toString()) * Double.valueOf(results.get(i).getString("quantity"));
+                        totalValues.add(price);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < results.size(); i++) {
+            myPieDataset.setValue(results.get(i).getString("currency"), BigDecimal.valueOf(totalValues.get(i)).setScale(2, RoundingMode.HALF_EVEN));
+            }
+        JFreeChart myChart = ChartFactory.createPieChart("My Crypto Portfolio", myPieDataset, rootPaneCheckingEnabled, rootPaneCheckingEnabled, Locale.ENGLISH);
+        ChartFrame chartFrame = new ChartFrame("Chart", myChart);
+        // allow the user to save the chart as an image
+        javax.swing.JButton saveBTN = new javax.swing.JButton();
+        saveBTN.setText("Save");
+        saveBTN.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    OutputStream out = new FileOutputStream("chart.png");
+                    ChartUtilities.writeChartAsPNG(out, myChart, chartFrame.getWidth(), chartFrame.getHeight());
+                    JOptionPane.showMessageDialog(null, "Image saved to .png file.");
+                } catch (IOException ex) {
+                    System.out.println(ex);
+                }
+            }
+        });
+        // add text area
+        javax.swing.JTextArea infoTA = new javax.swing.JTextArea();
+        chartFrame.add(saveBTN);
+        chartFrame.add(infoTA);
+        chartFrame.setLayout(null);
+        saveBTN.setBounds(chartFrame.getX(), chartFrame.getHeight(), 75, 20);
+        chartFrame.setVisible(true);
+        chartFrame.setSize(400, 500);
+        // calculate sum of all currency values
+        double portfolioValue = 0;
+        for (int i = 0; i < totalValues.size(); i++) {
+            portfolioValue += totalValues.get(i);
+        }
+        infoTA.setText("Total value of portfolio: €" + BigDecimal.valueOf(portfolioValue).setScale(2, RoundingMode.HALF_EVEN));
+    }
+    
+    public void drawOfflineChart(String recordLine) {
+        DefaultPieDataset myPieDataset = new DefaultPieDataset();
+        myPieDataset.clear();
+        // extract data from a single line
+        ArrayList<String> coinNames = new ArrayList<>();
+        ArrayList<Double> coinPrices = new ArrayList<>();
+        // extract coin names
+        for (int i = 0; i < recordLine.length() - 6; i++) {
+            if (recordLine.charAt(i) == 'C' && recordLine.charAt(i+1) == 'o' && recordLine.charAt(i+2) == 'i'
+                    && recordLine.charAt(i+3) == 'n' && recordLine.charAt(i+4) == ':'
+                    && recordLine.charAt(i+5) == ' ') {
+                int k = i+6;
+                String feed = "";
+                while (recordLine.charAt(k) != '|') {
+                    feed += recordLine.charAt(k);
+                    k++;
+                }
+                coinNames.add(feed);
+                System.out.println("Adding " + feed);
+            }
+        }
+        // extract coin prices
+        for (int i = 0; i < recordLine.length() - 13; i++) {
+            if (recordLine.charAt(i) == 'T' && recordLine.charAt(i+1) == 'o' && recordLine.charAt(i+2) == 't'
+                    && recordLine.charAt(i+3) == 'a' && recordLine.charAt(i+4) == 'l'
+                    && recordLine.charAt(i+5) == ' ' && recordLine.charAt(i+6) == 'V'
+                    && recordLine.charAt(i+7) == 'a' && recordLine.charAt(i+8) == 'l'
+                    && recordLine.charAt(i+9) == 'u' && recordLine.charAt(i+10) == 'e'
+                    && recordLine.charAt(i+11) == ':' && recordLine.charAt(i+12) == ' ') {
+                int k = i+13;
+                String feed = "";
+                while (recordLine.charAt(k) != '|') {
+                    feed += recordLine.charAt(k);
+                    k++;
+                }
+                coinPrices.add(Double.valueOf(feed));
+                System.out.println("Adding " + feed);
+            }
+        }
+        for (int i = 0; i < coinNames.size(); i++) {
+            myPieDataset.setValue(coinNames.get(i), BigDecimal.valueOf(coinPrices.get(i)).setScale(2, RoundingMode.HALF_EVEN));
+            }
+        JFreeChart myChart = ChartFactory.createPieChart("Crypto Portfolio", myPieDataset, rootPaneCheckingEnabled, rootPaneCheckingEnabled, Locale.ENGLISH);
+        ChartFrame chartFrame = new ChartFrame("Chart", myChart);
+        // allow the user to save the chart as an image
+        javax.swing.JButton saveBTN = new javax.swing.JButton();
+        saveBTN.setText("Save");
+        saveBTN.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    OutputStream out = new FileOutputStream("chart.png");
+                    ChartUtilities.writeChartAsPNG(out, myChart, chartFrame.getWidth(), chartFrame.getHeight());
+                    JOptionPane.showMessageDialog(null, "Image saved to .png file.");
+                } catch (IOException ex) {
+                    System.out.println(ex);
+                }
+            }
+        });
+        // add text area
+        javax.swing.JTextArea infoTA = new javax.swing.JTextArea();
+        chartFrame.add(saveBTN);
+        chartFrame.add(infoTA);
+        chartFrame.setLayout(null);
+        saveBTN.setBounds(chartFrame.getX(), chartFrame.getHeight(), 75, 20);
+        chartFrame.setVisible(true);
+        chartFrame.setSize(400, 500);
+        // calculate sum of all currency values
+        double portfolioValue = 0;
+        for (int i = 0; i < totalValues.size(); i++) {
+            portfolioValue += totalValues.get(i);
+        }
+        infoTA.setText("Total value of portfolio: €" + BigDecimal.valueOf(portfolioValue).setScale(2, RoundingMode.HALF_EVEN));
     }
 
     /**
@@ -386,58 +522,7 @@ public class SummaryGUI extends javax.swing.JFrame {
 
     private void chartBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chartBTNActionPerformed
         // TODO add your handling code here:
-        DefaultPieDataset myPieDataset = new DefaultPieDataset();
-        myPieDataset.clear();
-        FindIterable<Document> output = mongoManager.getCollection().find(new Document()).projection(exclude("_id"));
-        List<Document> results = new ArrayList<>();
-        output.into(results);
-        // refresh values
-        totalValues.clear();
-        double price;
-        if (apiManager.getObject() != null) {
-            for (int i = 0; i < results.size(); i++) {
-                for (int j = 0; j < apiManager.getJSONLength(); j++) {
-                    if (apiManager.getObject().query(apiManager.getPointers().get(j).toString()).equals(results.get(i).getString("currency"))) {
-                        price = Double.valueOf(apiManager.getObject().query(apiManager.getValues().get(j)).toString()) * Double.valueOf(results.get(i).getString("quantity"));
-                        totalValues.add(price);
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < results.size(); i++) {
-            myPieDataset.setValue(results.get(i).getString("currency"), BigDecimal.valueOf(totalValues.get(i)).setScale(2, RoundingMode.HALF_EVEN));
-            }
-        JFreeChart myChart = ChartFactory.createPieChart("My Crypto Portfolio", myPieDataset, rootPaneCheckingEnabled, rootPaneCheckingEnabled, Locale.ENGLISH);
-        ChartFrame chartFrame = new ChartFrame("Chart", myChart);
-        // allow the user to save the chart as an image
-        javax.swing.JButton saveBTN = new javax.swing.JButton();
-        saveBTN.setText("Save");
-        saveBTN.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    OutputStream out = new FileOutputStream("chart.png");
-                    ChartUtilities.writeChartAsPNG(out, myChart, chartFrame.getWidth(), chartFrame.getHeight());
-                    JOptionPane.showMessageDialog(null, "Image saved to .png file.");
-                } catch (IOException ex) {
-                    System.out.println(ex);
-                }
-            }
-        });
-        // add text area
-        javax.swing.JTextArea infoTA = new javax.swing.JTextArea();
-        chartFrame.add(saveBTN);
-        chartFrame.add(infoTA);
-        chartFrame.setLayout(null);
-        saveBTN.setBounds(chartFrame.getX(), chartFrame.getHeight(), 75, 20);
-        chartFrame.setVisible(true);
-        chartFrame.setSize(400, 500);
-        // calculate sum of all currency values
-        double portfolioValue = 0;
-        for (int i = 0; i < totalValues.size(); i++) {
-            portfolioValue += totalValues.get(i);
-        }
-        infoTA.setText("Total value of portfolio: €" + BigDecimal.valueOf(portfolioValue).setScale(2, RoundingMode.HALF_EVEN));
+        drawChart();
     }//GEN-LAST:event_chartBTNActionPerformed
 
     private void tutorialBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tutorialBTNActionPerformed
@@ -469,7 +554,6 @@ public class SummaryGUI extends javax.swing.JFrame {
         else if (modeCB.getSelectedItem().equals("Leaderboard")) {
             // connect to the leaderboard and add the user's timestamp to the
             // collection
-            MongoDBManager leaderboardConnection = new MongoDBManager();
             leaderboardConnection.connect(((LoginGUI)guiManager.getFrame("loginFrame")).getUser(), ((LoginGUI)guiManager.getFrame("loginFrame")).getPassword()
                     ,"mycluster.eqvxj", "leaderboard_database", "leaderboard", false);
             if (leaderboardConnection.isConnected()) {
@@ -552,6 +636,8 @@ public class SummaryGUI extends javax.swing.JFrame {
         String username = loginScreen.getUser();
         ChatGUI myChat = (ChatGUI)guiManager.getFrame("chatFrame");
         myChat.setUsername(username);
+        myChat.setMongoDBManager(mongoManager);
+        myChat.setAPIManager(apiManager);
     }//GEN-LAST:event_chatMIActionPerformed
 
     private void pricesMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pricesMIActionPerformed

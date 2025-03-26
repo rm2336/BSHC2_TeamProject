@@ -2,6 +2,7 @@ com\mycompany\apiconnection\SummaryGUI$13.class
 com\mycompany\apiconnection\CryptoChaunGUI$3.class
 com\mycompany\apiconnection\TutorialGUI.class
 com\mycompany\apiconnection\SummaryGUI$8.class
+com\mycompany\apiconnection\ChatGUI$9.class
 com\mycompany\apiconnection\GUIManager.class
 com\mycompany\apiconnection\EditorGUI$5.class
 com\mycompany\apiconnection\SummaryGUI$10.class
@@ -31,12 +32,14 @@ com\mycompany\apiconnection\CryptoChaunGUI$6.class
 com\mycompany\apiconnection\EditorGUI$4.class
 com\mycompany\apiconnection\NewsGUI$1.class
 com\mycompany\apiconnection\CryptoChaunGUI$15.class
+com\mycompany\apiconnection\ChatGUI$8.class
 com\mycompany\apiconnection\CryptoChaunGUI$12.class
 com\mycompany\apiconnection\SummaryGUI$17.class
 com\mycompany\apiconnection\ChatServer$1.class
 com\mycompany\apiconnection\LoginGUI.class
 com\mycompany\apiconnection\CryptoChaunGUI$8.class
 com\mycompany\apiconnection\CryptoChaunGUI$10.class
+com\mycompany\apiconnection\SummaryGUI$18.class
 com\mycompany\apiconnection\ChatGUI$4.class
 com\mycompany\apiconnection\CryptoChaunGUI$17.class
 com\mycompany\apiconnection\TutorialGUI$2.class

@@ -1,4 +1,10 @@
-[{
-    "quantity": "200.0",
-    "currency": "Tether USDt"
-}]
+[
+    {
+        "quantity": "200.0",
+        "currency": "Tether USDt"
+    },
+    {
+        "quantity": "40.0",
+        "currency": "BNB"
+    }
+]
