@@ -149,7 +149,34 @@ public class MongoDBManager {
                     System.out.println("Value: " + object.query(values.get(j).toString()));
                     System.out.println("Quantity: " + results.get(i).getString("quantity"));
                     
-                    theData += "Total Value: €" + BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP) + "\n";
+                    theData += "Total Value: EUR" + BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP) + "\n";
+                    totalValues.add(price);
+                }
+            }
+        }
+        return theData;
+    }
+    
+    public String getPortfolioLine(MongoCollection<Document> collection, JSONObject object, int objectLength, ArrayList<JSONPointer> pointers, ArrayList<JSONPointer> values) {
+        ArrayList<Double> totalValues = new ArrayList<>();
+        FindIterable<Document> output = collection.find(new Document()).projection(exclude("_id"));
+        List<Document> results = new ArrayList<>();
+        output.into(results);
+        String theData = "";
+        double price = 0;
+        for (int i = 0; i < results.size(); i++) {
+            System.out.println("i = " + i + ": " + results.get(i).getString("currency"));
+            theData += "Coin:" + results.get(i).getString("currency") + "| Quantity:" +
+            results.get(i).getString("quantity") + "| ";
+            // query JSON object for price
+            if (object != null)
+            for (int j = 0; j < objectLength; j++) {
+                if (object.query(pointers.get(j).toString()).equals(results.get(i).getString("currency"))) {
+                    price = Double.valueOf(object.query(values.get(j)).toString()) * Double.valueOf(results.get(i).getString("quantity"));
+                    System.out.println("Value: " + object.query(values.get(j).toString()));
+                    System.out.println("Quantity: " + results.get(i).getString("quantity"));
+                    
+                    theData += "Total Value: " + BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP) + "| ";
                     totalValues.add(price);
                 }
             }

@@ -34,7 +34,7 @@ public class LoginGUI extends javax.swing.JFrame {
     }
     
     public String getUser() {
-        return user;
+        return userTF.getText();
     }
     
     public String getPassword() {
