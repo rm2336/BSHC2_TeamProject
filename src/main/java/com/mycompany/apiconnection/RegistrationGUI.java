@@ -61,7 +61,7 @@ public class RegistrationGUI extends javax.swing.JFrame {
         passwordPF = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("CryptoChaun");
+        setTitle("Cryptochaun");
         setName("registrationFrame"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 255));
