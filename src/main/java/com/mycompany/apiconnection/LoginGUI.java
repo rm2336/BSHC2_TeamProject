@@ -30,6 +30,7 @@ public class LoginGUI extends javax.swing.JFrame {
     private CredentialManager credentialManager;
     private String user, password, clusterName;
     private GUIManager guiManager;
+    private String brevoKey = "";
     /**
      * Creates new form LoginGUI
      */
@@ -56,6 +57,10 @@ public class LoginGUI extends javax.swing.JFrame {
     public void setGUIManager(GUIManager guiManager) {
         this.guiManager = guiManager;
     }
+    
+    public String getBrevoKey() {
+        return brevoKey;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -75,6 +80,7 @@ public class LoginGUI extends javax.swing.JFrame {
         quitBTN = new javax.swing.JButton();
         passwordPF = new javax.swing.JPasswordField();
         signupLBL = new javax.swing.JLabel();
+        brevoBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cryptochaun");
@@ -121,6 +127,13 @@ public class LoginGUI extends javax.swing.JFrame {
             }
         });
 
+        brevoBTN.setText("M");
+        brevoBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                brevoBTNActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -128,7 +141,9 @@ public class LoginGUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(titleLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(148, 148, 148))
+                .addGap(96, 96, 96)
+                .addComponent(brevoBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -152,8 +167,13 @@ public class LoginGUI extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(titleLBL)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(titleLBL))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(brevoBTN)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userLBL)
@@ -229,6 +249,11 @@ public class LoginGUI extends javax.swing.JFrame {
         signupLBL.setFont(new Font("Segoe UI", PLAIN, 12));
         signupLBL.setForeground(Color.white);
     }//GEN-LAST:event_signupLBLMouseExited
+
+    private void brevoBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brevoBTNActionPerformed
+        // TODO add your handling code here:
+        brevoKey = JOptionPane.showInputDialog("Enter your Bevo API key: ");
+    }//GEN-LAST:event_brevoBTNActionPerformed
 
 public void loadSavedCredentials() {
         // Load saved credentials if available
@@ -306,6 +331,7 @@ public void saveDatabaseLocally() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton brevoBTN;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton loginBTN;
     private javax.swing.JLabel passwordLBL;

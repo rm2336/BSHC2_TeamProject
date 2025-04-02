@@ -61,6 +61,7 @@ public class RegistrationGUI extends javax.swing.JFrame {
         passwordPF = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("CryptoChaun");
         setName("registrationFrame"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 255));
@@ -158,13 +159,14 @@ public class RegistrationGUI extends javax.swing.JFrame {
         
         // authenticate API key
         ApiKeyAuth apiKey = (ApiKeyAuth)defaultClient.getAuthentication("api-key");
-        apiKey.setApiKey("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");
+        apiKey.setApiKey(((LoginGUI)guiManager.getFrame("loginFrame")).getBrevoKey());
         //apiKey.setApiKeyPrefix("Token");
         
         
         ApiKeyAuth partnerKey = (ApiKeyAuth)defaultClient.getAuthentication("partner-key");
         partnerKey.setApiKey("r2WgvMtfhanDNT3m");
-
+        
+        // check if API key has been entered
         if (mongoManager.accountExists(usernameTF.getText(), emailTF.getText())) {
             JOptionPane.showMessageDialog(rootPane, "Cannot proceed with registration. The specified username may"
                     + "already be taken or the entered email address might have an existing account linked to it.");
@@ -226,6 +228,7 @@ public class RegistrationGUI extends javax.swing.JFrame {
                 ((VerificationGUI)guiManager.getFrame("verificationFrame")).setVerificationCode(verificationCode);
                 ((VerificationGUI)guiManager.getFrame("verificationFrame")).setMongoManager(mongoManager);
                 ((VerificationGUI)guiManager.getFrame("verificationFrame")).setCredentials(usernameTF.getText(), String.valueOf(passwordPF.getPassword()), emailTF.getText());
+                ((VerificationGUI)guiManager.getFrame("verificationFrame")).modifyMessage();
                 usernameTF.setText("");
                 passwordPF.setText("");
                 emailTF.setText("");
@@ -233,6 +236,7 @@ public class RegistrationGUI extends javax.swing.JFrame {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
                 System.out.println(e.getCause());
+                JOptionPane.showMessageDialog(rootPane, "Could not send email. API key may be invalid or the connection has dropped.");
             }
 
     }//GEN-LAST:event_confirmBTNActionPerformed

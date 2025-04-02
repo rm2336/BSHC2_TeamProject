@@ -40,6 +40,7 @@ com\mycompany\apiconnection\CryptoChaunGUI$15.class
 com\mycompany\apiconnection\ChatGUI$8.class
 com\mycompany\apiconnection\CryptoChaunGUI$12.class
 com\mycompany\apiconnection\VerificationGUI.class
+com\mycompany\apiconnection\LoginGUI$4.class
 com\mycompany\apiconnection\SummaryGUI$17.class
 com\mycompany\apiconnection\ChatServer$1.class
 com\mycompany\apiconnection\LoginGUI.class
@@ -80,6 +81,7 @@ com\mycompany\apiconnection\CryptoChaunGUI$4.class
 com\mycompany\apiconnection\NewsGUI.class
 com\mycompany\apiconnection\ChatClient.class
 com\mycompany\apiconnection\SummaryGUI$12.class
+com\mycompany\apiconnection\ChatGUI$10.class
 com\mycompany\apiconnection\ChatGUI$3.class
 com\mycompany\apiconnection\EditorGUI$2.class
 com\mycompany\apiconnection\SummaryGUI$5.class

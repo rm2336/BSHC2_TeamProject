@@ -33,6 +33,8 @@ public class ChatGUI extends javax.swing.JFrame {
     private ChatServer chatServer;
     private ChatProtocol chatProtocol;
     private String name;
+    private Thread serverThread;
+    private Thread clientThread;
     private GUIManager guiManager;
     private APIManager apiManager;
     private MongoDBManager mongoManager;
@@ -58,8 +60,18 @@ public class ChatGUI extends javax.swing.JFrame {
     public void setMongoDBManager(MongoDBManager mongoManager) {
         this.mongoManager = mongoManager;
     }
+    
+    public javax.swing.JButton getEndButton() {
+        return endBTN;
+    }
+    
+    public void resetChatGUI() {
+        messageTA.setText("");
+        sendBTN.setEnabled(false);
+        connectionRBG.clearSelection();
+    }
 
- public void drawOfflineChart(String recordLine) {
+    public void drawOfflineChart(String recordLine) {
         System.out.println("Drawing: " + recordLine);
         DefaultPieDataset myPieDataset = new DefaultPieDataset();
         myPieDataset.clear();
@@ -152,6 +164,7 @@ public class ChatGUI extends javax.swing.JFrame {
         serverRB = new javax.swing.JRadioButton();
         clientRB = new javax.swing.JRadioButton();
         backBTN = new javax.swing.JButton();
+        endBTN = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         shareMU = new javax.swing.JMenu();
         portfolioMI = new javax.swing.JMenuItem();
@@ -198,6 +211,13 @@ public class ChatGUI extends javax.swing.JFrame {
             }
         });
 
+        endBTN.setText("End Chat");
+        endBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                endBTNActionPerformed(evt);
+            }
+        });
+
         shareMU.setText("Share");
 
         portfolioMI.setText("Portfolio");
@@ -233,6 +253,8 @@ public class ChatGUI extends javax.swing.JFrame {
                         .addComponent(serverRB, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(clientRB, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addComponent(endBTN)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(backBTN)
                         .addGap(17, 17, 17))))
@@ -256,7 +278,9 @@ public class ChatGUI extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(backBTN)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(backBTN)
+                            .addComponent(endBTN))
                         .addGap(15, 15, 15))))
         );
 
@@ -265,7 +289,7 @@ public class ChatGUI extends javax.swing.JFrame {
 
     private void serverRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverRBActionPerformed
         // TODO add your handling code here:
-        Thread serverThread = new Thread() {
+        serverThread = new Thread() {
             public void run() {
             portNumber = Integer.parseInt(JOptionPane.showInputDialog("Enter port number: "));
             sendBTN.setEnabled(true);
@@ -278,7 +302,7 @@ public class ChatGUI extends javax.swing.JFrame {
 
     private void clientRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clientRBActionPerformed
         // TODO add your handling code here:
-        Thread clientThread = new Thread() {
+        clientThread = new Thread() {
             public void run() {
             IPAddress = JOptionPane.showInputDialog("Enter IP address: ");
             portNumber = Integer.parseInt(JOptionPane.showInputDialog("Enter port number: "));
@@ -306,6 +330,10 @@ public class ChatGUI extends javax.swing.JFrame {
     private void portfolioMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_portfolioMIActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_portfolioMIActionPerformed
+
+    private void endBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endBTNActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_endBTNActionPerformed
 
     /**
      * @param args the command line arguments
@@ -346,6 +374,7 @@ public class ChatGUI extends javax.swing.JFrame {
     private javax.swing.JButton backBTN;
     private javax.swing.JRadioButton clientRB;
     private javax.swing.ButtonGroup connectionRBG;
+    private javax.swing.JButton endBTN;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea messageTA;

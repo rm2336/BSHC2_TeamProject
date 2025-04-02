@@ -41,6 +41,10 @@ public class VerificationGUI extends javax.swing.JFrame {
         password = pw;
         emailAddress = email;
     }
+    
+    public void modifyMessage() {
+        help2LBL.setText("as shown in the confirmation email sent to " + emailAddress);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -62,6 +66,7 @@ public class VerificationGUI extends javax.swing.JFrame {
         confirmBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Cryptochaun");
         setName("verificationFrame"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(51, 102, 255));
