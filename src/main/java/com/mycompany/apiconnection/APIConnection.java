@@ -6,6 +6,8 @@ package com.mycompany.apiconnection;
 
 import com.sun.syndication.io.FeedException;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +20,11 @@ import javax.swing.UIManager;
 public class APIConnection {
     public static void main(String[] args) {
         // instantiate interface classes
+        try {
+        System.out.println(InetAddress.getLocalHost());
+        } catch (UnknownHostException e) {
+            System.out.println(e);
+        }
         MongoDBManager mongoDB = new MongoDBManager();
         APIManager api = new APIManager();
         CredentialManager credentialManager = new CredentialManager();
@@ -50,6 +57,12 @@ public class APIConnection {
         ChatGUI chat = new ChatGUI();
         chat.setGUIManager(manager);
         
+        RegistrationGUI register = new RegistrationGUI();
+        register.setGUIManager(manager);
+        
+        VerificationGUI verification = new VerificationGUI();
+        verification.setGUIManager(manager);
+        
         // add frames to the GUI manager
         manager.addFrame(gui);
         manager.addFrame(editor);
@@ -57,6 +70,8 @@ public class APIConnection {
         manager.addFrame(summary);
         manager.addFrame(tutorial);
         manager.addFrame(chat);
+        manager.addFrame(register);
+        manager.addFrame(verification);
         
         for (int i = 0; i < manager.getFrameList().size(); i++) {
             System.out.println(manager.getFrameList().get(i).toString());

@@ -6,6 +6,10 @@ package com.mycompany.apiconnection;
 
 import com.mongodb.client.FindIterable;
 import static com.mongodb.client.model.Projections.exclude;
+import java.awt.Color;
+import java.awt.Font;
+import static java.awt.Font.BOLD;
+import static java.awt.Font.PLAIN;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,6 +74,7 @@ public class LoginGUI extends javax.swing.JFrame {
         loginBTN = new javax.swing.JButton();
         quitBTN = new javax.swing.JButton();
         passwordPF = new javax.swing.JPasswordField();
+        signupLBL = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cryptochaun");
@@ -101,6 +106,21 @@ public class LoginGUI extends javax.swing.JFrame {
 
         quitBTN.setText("Quit");
 
+        signupLBL.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        signupLBL.setForeground(new java.awt.Color(255, 255, 255));
+        signupLBL.setText("Sign Up Here");
+        signupLBL.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                signupLBLMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                signupLBLMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                signupLBLMouseExited(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -116,16 +136,18 @@ public class LoginGUI extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(passwordLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(userLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(userTF, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
                             .addComponent(passwordPF))
                         .addGap(27, 27, 27))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(loginBTN)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(signupLBL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(loginBTN, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(169, 169, 169)
                         .addComponent(quitBTN)
-                        .addGap(23, 23, 23))))
+                        .addGap(46, 46, 46))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -144,7 +166,9 @@ public class LoginGUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(loginBTN)
                     .addComponent(quitBTN))
-                .addGap(44, 44, 44))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addComponent(signupLBL)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -170,20 +194,41 @@ public class LoginGUI extends javax.swing.JFrame {
     private void loginBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBTNActionPerformed
       
         // Attempt to connect
-        mongoManager.connect(userTF.getText(), passwordPF.getText(), "mycluster.eqvxj", "crypto_database", userTF.getText(), true);
+        if (((RegistrationGUI)guiManager.getFrame("registrationFrame")).getAuthenticator().userAuthenticated(userTF.getText(), passwordPF.getText())) {
+            mongoManager.connect("adminUser", "upPGU?7fZ+5d@4k", "mycluster.eqvxj", "crypto_database", userTF.getText(), true);
         
-        // Save the database backup locally
-        saveDatabaseLocally();
-                
-        // Save credentials after successful connection
-        credentialManager.saveCredentials(user, password, clusterName);
-                                 
-        // Navigate to login page
-        if (mongoManager.isConnected()) {
-            guiManager.loadFrame("summaryFrame");
-            user = userTF.getText();
-        }
+            // Save the database backup locally
+            saveDatabaseLocally();
+
+            // Save credentials after successful connection
+            credentialManager.saveCredentials(user, password, clusterName);
+
+            // Navigate to login page
+            if (mongoManager.isConnected()) {
+                guiManager.loadFrame("summaryFrame");
+                user = userTF.getText();
+            }
+        } else
+            JOptionPane.showMessageDialog(rootPane, "Invalid login credentials.");
     }//GEN-LAST:event_loginBTNActionPerformed
+
+    private void signupLBLMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signupLBLMouseClicked
+        // TODO add your handling code here:
+        // navigate to the registration form
+        guiManager.loadFrame("registrationFrame");
+    }//GEN-LAST:event_signupLBLMouseClicked
+
+    private void signupLBLMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signupLBLMouseEntered
+        // TODO add your handling code here:
+        signupLBL.setFont(new Font("Segoe UI", BOLD, 12));
+        signupLBL.setForeground(Color.yellow);
+    }//GEN-LAST:event_signupLBLMouseEntered
+
+    private void signupLBLMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signupLBLMouseExited
+        // TODO add your handling code here:
+        signupLBL.setFont(new Font("Segoe UI", PLAIN, 12));
+        signupLBL.setForeground(Color.white);
+    }//GEN-LAST:event_signupLBLMouseExited
 
 public void loadSavedCredentials() {
         // Load saved credentials if available
@@ -266,6 +311,7 @@ public void saveDatabaseLocally() {
     private javax.swing.JLabel passwordLBL;
     private javax.swing.JPasswordField passwordPF;
     private javax.swing.JButton quitBTN;
+    private javax.swing.JLabel signupLBL;
     private javax.swing.JLabel titleLBL;
     private javax.swing.JLabel userLBL;
     private javax.swing.JTextField userTF;

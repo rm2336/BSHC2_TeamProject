@@ -69,8 +69,7 @@ public class SummaryGUI extends javax.swing.JFrame {
             summaryTA.append(newsEntries.get(i).getPublishedDate() + "\n\n");
         }
         summaryTA.getCaret().moveDot(0);
-        leaderboardConnection.connect(((LoginGUI)guiManager.getFrame("loginFrame")).getUser(), ((LoginGUI)guiManager.getFrame("loginFrame")).getPassword()
-                ,"mycluster.eqvxj", "leaderboard_database", "leaderboard", false);
+        leaderboardConnection.connect("adminUser", "upPGU?7fZ+5d@4k", "mycluster.eqvxj", "leaderboard_database", "leaderboard", false);
         if (leaderboardConnection.isConnected())
             leaderboardConnection.updateLeaderboard(((LoginGUI)guiManager.getFrame("loginFrame")).getUser());
     }
@@ -554,7 +553,7 @@ public class SummaryGUI extends javax.swing.JFrame {
         else if (modeCB.getSelectedItem().equals("Leaderboard")) {
             // connect to the leaderboard and add the user's timestamp to the
             // collection
-            leaderboardConnection.connect(((LoginGUI)guiManager.getFrame("loginFrame")).getUser(), ((LoginGUI)guiManager.getFrame("loginFrame")).getPassword()
+            leaderboardConnection.connect("adminUser", "upPGU?7fZ+5d@4k"
                     ,"mycluster.eqvxj", "leaderboard_database", "leaderboard", false);
             if (leaderboardConnection.isConnected()) {
                 leaderboardConnection.updateLeaderboard(((LoginGUI)guiManager.getFrame("loginFrame")).getUser());

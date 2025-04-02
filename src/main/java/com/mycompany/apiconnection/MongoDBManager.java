@@ -42,6 +42,9 @@ import org.json.JSONPointer;
  *
  * @author rokom
  * the MongoDB manager class handles the database connection throughout the app
+ * master credentials:
+ * adminUser
+ * upPGU?7fZ+5d@4k
  */
 public class MongoDBManager {
     private MongoClientSettings settings;
@@ -246,6 +249,47 @@ public class MongoDBManager {
 
     public MongoCollection<Document> getCollection() {
         return collection;
+    }
+    
+    //create a new user account
+    public void createAccount(String username, String password, String emailAddress) {
+        Document newAccount = new Document("_id", new ObjectId())
+                .append("username", username)
+                .append("password", password)
+                .append("email", emailAddress);
+        collection.insertOne(newAccount);      
+    }
+    
+    // check if the account the user would like to create already exists
+    public boolean accountExists(String username, String emailAddress) {
+        FindIterable<Document> output = collection.find(new Document()).projection(exclude("_id"));
+        List<Document> results = new ArrayList<>();
+        output.into(results);
+        // match names
+        for (int i = 0; i < results.size(); i++) {
+            if (results.get(i).getString("username").equals(username))
+                return true;
+        }
+        // match e-mail addresses
+        for (int i = 0; i < results.size(); i++) {
+            if (results.get(i).getString("email").equals(emailAddress))
+                return true;
+        }
+        return false;
+    }
+    
+    //verify credentials
+    public boolean userAuthenticated(String username, String password) {
+        FindIterable<Document> output = collection.find(new Document()).projection(exclude("_id"));
+        List<Document> results = new ArrayList<>();
+        output.into(results);
+        // match credentials
+        for (int i = 0; i < results.size(); i++) {
+            if (results.get(i).getString("username").equals(username))
+                if (results.get(i).getString("password").equals(password))
+                    return true;
+        }
+        return false;
     }
     
 }
