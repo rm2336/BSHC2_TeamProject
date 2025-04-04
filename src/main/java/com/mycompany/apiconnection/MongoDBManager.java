@@ -26,8 +26,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -152,7 +154,7 @@ public class MongoDBManager {
                     System.out.println("Value: " + object.query(values.get(j).toString()));
                     System.out.println("Quantity: " + results.get(i).getString("quantity"));
                     
-                    theData += "Total Value: EUR" + BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP) + "\n";
+                    theData += "Total Value: €" + BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP) + "\n";
                     totalValues.add(price);
                 }
             }
@@ -229,6 +231,20 @@ public class MongoDBManager {
             result += " - Last seen on " + results.get(i).getString("last logged in") + "\n";
         }
         return result;
+    }
+    
+    public LocalDate getLastLoggedInDate(String username) {
+        String result = "";
+        FindIterable<Document> output = collection.find(new Document()).projection(exclude("_id"));
+        List<Document> results = new ArrayList<>();
+        output.into(results);
+        for (int i = 0; i < results.size(); i++) {
+            if(results.get(i).getString("username").equals(username))
+                result = results.get(i).getString("last logged in") + "\n";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy");
+        System.out.println("Date: " + LocalDate.parse(result));
+        return LocalDate.parse(result);
     }
        
     public boolean isConnected() {

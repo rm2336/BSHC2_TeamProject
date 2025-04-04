@@ -45,7 +45,9 @@ public class APIManager {
         
     // URIBuilder is used to safely construct a URL with query parameters.
         URIBuilder query = new URIBuilder(uri);
-        query.addParameters(parameters);
+        
+        if (parameters != null)
+            query.addParameters(parameters);
         
     // CloseableHttpClient comes from Apache’s HTTP library.
     // It’s "closeable" to release network resources once done 
@@ -123,6 +125,21 @@ public class APIManager {
         catch (URISyntaxException e) {
             System.out.println(e);
         } 
+    }
+    
+    public boolean validateAPIKey() {
+        String uri = "https://pro-api.coinmarketcap.com/v1/key/info";
+        try {
+            String result = makeAPICall(uri, null);
+            System.out.println(result);
+            if (result.contains("This API Key is invalid."))
+                return false;
+            else
+                return true;
+        } catch (URISyntaxException | IOException e) {
+            System.out.println(e);
+            return false;
+        }
     }
     
     public String getPrices() {

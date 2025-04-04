@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
@@ -69,6 +70,9 @@ public class ChatGUI extends javax.swing.JFrame {
         messageTA.setText("");
         sendBTN.setEnabled(false);
         connectionRBG.clearSelection();
+        String users = ((SummaryGUI)guiManager.getFrame("summaryFrame")).getLeaderboardConnection().readLeaderboard();
+        LocalDate date = ((SummaryGUI)guiManager.getFrame("summaryFrame")).getLeaderboardConnection().getLastLoggedInDate("rmatao");
+        System.out.println(date);
     }
 
     public void drawOfflineChart(String recordLine) {

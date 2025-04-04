@@ -5,6 +5,8 @@
 package com.mycompany.apiconnection;
 
 import com.sun.syndication.feed.synd.SyndEntryImpl;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -33,6 +35,7 @@ public class NewsGUI extends javax.swing.JFrame {
      */
     public NewsGUI() {
         initComponents();
+        this.setExtendedState(Frame.MAXIMIZED_BOTH);
     }
     
     public void setNewsFeed(List<SyndEntryImpl> feed) {
@@ -117,6 +120,7 @@ public class NewsGUI extends javax.swing.JFrame {
         editorJP.setBackground(new java.awt.Color(51, 51, 255));
 
         readerEP.setEditable(false);
+        readerEP.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         readerEP.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         readerEP.setEnabled(false);
         jScrollPane1.setViewportView(readerEP);
