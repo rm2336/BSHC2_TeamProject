@@ -31,6 +31,7 @@ import org.json.JSONObject;
  */
 public class SummaryGUI extends javax.swing.JFrame {
 
+    private String API_key;
     private List<SyndEntryImpl> newsEntries;
     private int articleIndex = -1;
     private GUIManager guiManager;
@@ -69,8 +70,7 @@ public class SummaryGUI extends javax.swing.JFrame {
             summaryTA.append(newsEntries.get(i).getPublishedDate() + "\n\n");
         }
         summaryTA.getCaret().moveDot(0);
-        leaderboardConnection.connect(((LoginGUI)guiManager.getFrame("loginFrame")).getUser(), ((LoginGUI)guiManager.getFrame("loginFrame")).getPassword()
-                ,"mycluster.eqvxj", "leaderboard_database", "leaderboard", false);
+        leaderboardConnection.connect("adminUser", "upPGU?7fZ+5d@4k", "mycluster.eqvxj", "leaderboard_database", "leaderboard", false);
         if (leaderboardConnection.isConnected())
             leaderboardConnection.updateLeaderboard(((LoginGUI)guiManager.getFrame("loginFrame")).getUser());
     }
@@ -532,7 +532,7 @@ public class SummaryGUI extends javax.swing.JFrame {
 
     private void enterKeyBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enterKeyBTNActionPerformed
         // TODO add your handling code here:
-        String API_key = JOptionPane.showInputDialog(null, "Enter your API key: ");
+        API_key = JOptionPane.showInputDialog(null, "Enter your API key: ");
         apiManager.setAPIKey(API_key);
         
         if (API_key.equals(""))
@@ -541,8 +541,11 @@ public class SummaryGUI extends javax.swing.JFrame {
 
     private void fetchDataBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fetchDataBTNActionPerformed
         // TODO add your handling code here:
-        apiManager.fetchAPI();
-        summaryTA.setText(apiManager.getPrices());
+        if (API_key.equals("") || API_key.equals("b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c")) {
+            apiManager.fetchAPI();
+            summaryTA.setText(apiManager.getPrices());
+        } else
+            JOptionPane.showMessageDialog(null, "API key is invalid. Cannot fetch prices.");
     }//GEN-LAST:event_fetchDataBTNActionPerformed
 
     private void modeCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeCBActionPerformed
@@ -554,7 +557,7 @@ public class SummaryGUI extends javax.swing.JFrame {
         else if (modeCB.getSelectedItem().equals("Leaderboard")) {
             // connect to the leaderboard and add the user's timestamp to the
             // collection
-            leaderboardConnection.connect(((LoginGUI)guiManager.getFrame("loginFrame")).getUser(), ((LoginGUI)guiManager.getFrame("loginFrame")).getPassword()
+            leaderboardConnection.connect("adminUser", "upPGU?7fZ+5d@4k"
                     ,"mycluster.eqvxj", "leaderboard_database", "leaderboard", false);
             if (leaderboardConnection.isConnected()) {
                 leaderboardConnection.updateLeaderboard(((LoginGUI)guiManager.getFrame("loginFrame")).getUser());

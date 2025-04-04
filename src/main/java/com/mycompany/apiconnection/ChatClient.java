@@ -30,6 +30,7 @@ public class ChatClient {
     private String hostName;
     private String fromUser;
     private String fromServer;
+    private boolean terminateThread = false;
     private boolean isClicked = false;
     private boolean sharedPortfolio = false;
     private boolean readFirstLine = false;
@@ -63,7 +64,12 @@ public class ChatClient {
                 sharedPortfolio = true;
                 System.out.println("Share portfolio button clicked.");
             });
-            while ((fromServer = in.readLine()) != null) {
+            // add listener to the end chat button
+            ((ChatGUI)guiManager.getFrame("chatFrame")).getEndButton().addActionListener((ActionEvent e) -> {
+                terminateThread = true;
+                ((ChatGUI)guiManager.getFrame("chatFrame")).resetChatGUI();
+            });
+            while ((fromServer = in.readLine()) != null && !terminateThread) {
                 
                 fromUser = "";
 

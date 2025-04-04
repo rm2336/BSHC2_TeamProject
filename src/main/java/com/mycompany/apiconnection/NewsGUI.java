@@ -117,6 +117,8 @@ public class NewsGUI extends javax.swing.JFrame {
         editorJP.setBackground(new java.awt.Color(51, 51, 255));
 
         readerEP.setEditable(false);
+        readerEP.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        readerEP.setEnabled(false);
         jScrollPane1.setViewportView(readerEP);
 
         javax.swing.GroupLayout editorJPLayout = new javax.swing.GroupLayout(editorJP);

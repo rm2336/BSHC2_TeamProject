@@ -32,6 +32,7 @@ public class ChatServer {
     private int portNumber;
     private boolean isClicked = false;
     private boolean sharedPortfolio = false;
+    private boolean terminateThread = false;
     
         // TODO code application logic here
     ChatServer(int port, javax.swing.JTextArea output, javax.swing.JTextField msg, javax.swing.JButton button, String username,
@@ -61,13 +62,18 @@ public class ChatServer {
                 sharedPortfolio = true;
                 System.out.println("Share portfolio button clicked.");
             });
+            // add listener to the end chat button
+            ((ChatGUI)guiManager.getFrame("chatFrame")).getEndButton().addActionListener((ActionEvent e) -> {
+                terminateThread = true;
+                ((ChatGUI)guiManager.getFrame("chatFrame")).resetChatGUI();
+            });
             // Initiate conversation with client
             ChatProtocol kkp = new ChatProtocol();
             outputLine = "Connection established.";
             
             out.println("Message: " + username + ": " + outputLine);
             
-            while ((inputLine = in.readLine()) != null) {
+            while ((inputLine = in.readLine()) != null && !terminateThread) {
                 if (!inputLine.equals("0")) {
                     if (inputLine.startsWith("Message: ")) 
                         output.append(inputLine.substring(9) + "\n");
