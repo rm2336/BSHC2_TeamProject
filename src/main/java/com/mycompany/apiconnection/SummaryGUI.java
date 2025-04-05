@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -61,6 +62,10 @@ public class SummaryGUI extends javax.swing.JFrame {
     
     public void setMongoManager(MongoDBManager mongoManager) {
         this.mongoManager = mongoManager;
+    }
+    
+    public MongoDBManager getLeaderboardConnection() {
+        return leaderboardConnection;
     }
     
     public void loadNews() {
@@ -534,14 +539,20 @@ public class SummaryGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         API_key = JOptionPane.showInputDialog(null, "Enter your API key: ");
         apiManager.setAPIKey(API_key);
-        
+        // test the key
+        if (!API_key.equals("")) {
+                if (apiManager.validateAPIKey())
+                    JOptionPane.showMessageDialog(rootPane, "API key is valid!");
+                else
+                    JOptionPane.showMessageDialog(rootPane, "API key is invalid.");
+        }
         if (API_key.equals(""))
             API_key = "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c";
     }//GEN-LAST:event_enterKeyBTNActionPerformed
 
     private void fetchDataBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fetchDataBTNActionPerformed
         // TODO add your handling code here:
-        if (API_key.equals("") || API_key.equals("b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c")) {
+        if (apiManager.validateAPIKey() && !API_key.equals("b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c")) {
             apiManager.fetchAPI();
             summaryTA.setText(apiManager.getPrices());
         } else

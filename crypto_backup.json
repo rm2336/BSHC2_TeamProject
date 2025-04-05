@@ -1,4 +1,10 @@
-[{
-    "quantity": "3.0",
-    "currency": "Bitcoin"
-}]
+[
+    {
+        "quantity": "1",
+        "currency": "Bitcoin"
+    },
+    {
+        "quantity": "24.0",
+        "currency": "XRP"
+    }
+]

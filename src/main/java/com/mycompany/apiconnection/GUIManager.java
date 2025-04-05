@@ -50,6 +50,8 @@ public class GUIManager {
                 }
                 else if (frame instanceof LoginGUI)
                     ((LoginGUI) frame).loadSavedCredentials();
+                else if (frame instanceof ChatGUI)
+                    ((ChatGUI) frame).resetChatGUI();
                 currentFrame = frame;
                 frame.setVisible(true);
             }
