@@ -1,0 +1,18 @@
+[
+    {
+        "quantity": "2.0",
+        "currency": "Ethereum"
+    },
+    {
+        "quantity": "10.0",
+        "currency": "Tether USDt"
+    },
+    {
+        "quantity": "3.0",
+        "currency": "Bitcoin"
+    },
+    {
+        "quantity": "3.0",
+        "currency": "XRP"
+    }
+]
