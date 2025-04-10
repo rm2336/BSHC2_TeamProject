@@ -10,11 +10,13 @@ import java.awt.Color;
 import java.awt.Font;
 import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import javax.swing.JOptionPane;
 import org.bson.Document;
 import org.json.JSONArray;
@@ -36,6 +38,7 @@ public class LoginGUI extends javax.swing.JFrame {
      */
     public LoginGUI() {
         initComponents();
+        checkAndLoadSavedCredentials();
     }
     
     public String getUser() {
@@ -61,6 +64,28 @@ public class LoginGUI extends javax.swing.JFrame {
     public String getBrevoKey() {
         return brevoKey;
     }
+    
+    private void checkAndLoadSavedCredentials() {
+    Properties userSettings = FileManager.loadConfig();  // Load user_setting.txt
+
+    boolean shouldLoadCredentials = Boolean.parseBoolean(userSettings.getProperty("saveCredential", "false"));
+
+    if (shouldLoadCredentials) {
+        File credentialFile = new File("credentials.txt");
+        if (credentialFile.exists()) {
+            loadSavedCredentials();
+        }
+    } else {
+        // Only delete credentials if explicitly set to false in user_setting.txt
+        File credentialFile = new File("credentials.txt");
+        if (credentialFile.exists()) {
+            CredentialManager.deleteCredentials();
+            System.out.println("Credentials deleted because saveCredential is false in user_setting.txt.");
+        }
+    }
+}
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -220,11 +245,9 @@ public class LoginGUI extends javax.swing.JFrame {
             // Save the database backup locally
             saveDatabaseLocally();
 
-            // Save credentials after successful connection
-            credentialManager.saveCredentials(user, password, clusterName);
-
             // Navigate to login page
             if (mongoManager.isConnected()) {
+                credentialManager.saveCredentials(getUser(), getPassword(), clusterName);
                 guiManager.loadFrame("summaryFrame");
                 user = userTF.getText();
             }
@@ -256,9 +279,11 @@ public class LoginGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_brevoBTNActionPerformed
 
 public void loadSavedCredentials() {
+    String[] savedCredentials = credentialManager.loadCredentials();
+        
         // Load saved credentials if available
-        String[] savedCredentials = credentialManager.loadCredentials();
         if(savedCredentials != null) {
+            
             //load credentials into variables
             user = savedCredentials[0];
             password = savedCredentials[1];
@@ -268,6 +293,7 @@ public void loadSavedCredentials() {
         userTF.setText(user);
         passwordPF.setText(password);
 }
+
 public void saveDatabaseLocally() {
         if (mongoManager.getCollection() == null){
             JOptionPane.showMessageDialog(null, "Not connected to MongoDB!");
