@@ -6,6 +6,9 @@ package com.mycompany.apiconnection;
 
 import com.mongodb.client.FindIterable;
 import static com.mongodb.client.model.Projections.exclude;
+import com.mycompany.apiconnection.ChatGUI;
+import com.mycompany.apiconnection.FileManager;
+import com.mycompany.apiconnection.LoginGUI;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import java.awt.event.ActionEvent;
 import java.io.FileOutputStream;
@@ -17,6 +20,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import javax.swing.JOptionPane;
 import org.bson.Document;
 import org.jfree.chart.ChartFactory;
@@ -38,6 +42,7 @@ public class SummaryGUI extends javax.swing.JFrame {
     private GUIManager guiManager;
     private APIManager apiManager;
     private MongoDBManager mongoManager;
+    private UserSetting userSetting;
     private MongoDBManager leaderboardConnection;
     private ArrayList<Double> totalValues = new ArrayList<>();
     /**
@@ -46,6 +51,10 @@ public class SummaryGUI extends javax.swing.JFrame {
     public SummaryGUI() {
         initComponents();
         leaderboardConnection = new MongoDBManager();
+    }
+    
+    public void setUserSetting(UserSetting userSetting) {
+        this.userSetting = userSetting;
     }
     
     public void setNewsEntries(List<SyndEntryImpl> list) {
@@ -235,6 +244,7 @@ public class SummaryGUI extends javax.swing.JFrame {
         nextBTN = new javax.swing.JButton();
         tutorialBTN = new javax.swing.JButton();
         modeCB = new javax.swing.JComboBox<>();
+        settingBtn = new javax.swing.JButton();
         mainMB = new javax.swing.JMenuBar();
         menuMU = new javax.swing.JMenu();
         chartMI = new javax.swing.JMenuItem();
@@ -304,8 +314,18 @@ public class SummaryGUI extends javax.swing.JFrame {
         logoutBTN.setText("Logout");
 
         saveBTN.setText("Save");
+        saveBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBTNActionPerformed(evt);
+            }
+        });
 
         loadBTN.setText("Load");
+        loadBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadBTNActionPerformed(evt);
+            }
+        });
 
         prevBTN.setText("<");
         prevBTN.addActionListener(new java.awt.event.ActionListener() {
@@ -332,6 +352,13 @@ public class SummaryGUI extends javax.swing.JFrame {
         modeCB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 modeCBActionPerformed(evt);
+            }
+        });
+
+        settingBtn.setText("Setting");
+        settingBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                settingBtnActionPerformed(evt);
             }
         });
 
@@ -378,16 +405,22 @@ public class SummaryGUI extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(titleLBL, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(73, 73, 73)))
-                .addGap(129, 129, 129)
+                .addGap(48, 48, 48)
+                .addComponent(settingBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tutorialBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(titleLBL)
-                    .addComponent(tutorialBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(titleLBL)
+                        .addComponent(tutorialBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(settingBtn)))
                 .addGap(4, 4, 4)
                 .addComponent(summaryLBL)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -557,6 +590,8 @@ public class SummaryGUI extends javax.swing.JFrame {
             summaryTA.setText(apiManager.getPrices());
         } else
             JOptionPane.showMessageDialog(null, "API key is invalid. Cannot fetch prices.");
+        
+        
     }//GEN-LAST:event_fetchDataBTNActionPerformed
 
     private void modeCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modeCBActionPerformed
@@ -669,6 +704,54 @@ public class SummaryGUI extends javax.swing.JFrame {
             API_key = "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c";
     }//GEN-LAST:event_keyMIActionPerformed
 
+    private void settingBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingBtnActionPerformed
+        guiManager.loadFrame("userSettingFrame");
+    }//GEN-LAST:event_settingBtnActionPerformed
+
+    private void loadBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadBTNActionPerformed
+        Properties config = FileManager.loadConfig();
+    boolean shouldLoadAPI = Boolean.parseBoolean(config.getProperty("saveAPI", "false"));
+
+    if (shouldLoadAPI) {
+        Properties apiProps = FileManager.loadAPIData();
+        String savedKey = apiProps.getProperty("apiKey");
+        String savedData = apiProps.getProperty("apiData");
+
+        if (savedKey != null && !savedKey.isEmpty()) {
+            apiManager.setAPIKey(savedKey);
+        }
+
+        if (savedData != null && !savedData.isEmpty()) {
+            try {
+                apiManager.setObject(new JSONObject(savedData));
+                summaryTA.setText(apiManager.getPrices());
+            } catch (Exception e) {
+                summaryTA.setText("Error loading saved API data.");
+                e.printStackTrace();
+            }
+        } else {
+            summaryTA.setText("No saved API data found.");
+        }
+    } else {
+        summaryTA.setText("saveAPI setting is off. Data not loaded.");
+    }
+    }//GEN-LAST:event_loadBTNActionPerformed
+
+    private void saveBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBTNActionPerformed
+    Properties config = FileManager.loadConfig();
+    boolean shouldSaveAPI = Boolean.parseBoolean(config.getProperty("saveAPI", "false"));
+
+    if (shouldSaveAPI) {
+        String apiKey = apiManager.getAPIKey();
+        String apiData = apiManager.getObject().toString();  // raw JSON
+        FileManager.saveAPIData(apiKey, apiData);
+    } else {
+        JOptionPane.showMessageDialog(null, "saveAPI setting is disabled in config. Data not saved.");
+    }
+
+    }//GEN-LAST:event_saveBTNActionPerformed
+
+    
     /**
      * @param args the command line arguments
      */
@@ -728,6 +811,7 @@ public class SummaryGUI extends javax.swing.JFrame {
     private javax.swing.JButton prevBTN;
     private javax.swing.JMenuItem pricesMI;
     private javax.swing.JButton saveBTN;
+    private javax.swing.JButton settingBtn;
     private javax.swing.JLabel summaryLBL;
     private javax.swing.JTextArea summaryTA;
     private javax.swing.JLabel titleLBL;

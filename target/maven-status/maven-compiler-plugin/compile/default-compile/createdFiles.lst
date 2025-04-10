@@ -9,6 +9,7 @@ com\mycompany\apiconnection\GUIManager.class
 com\mycompany\apiconnection\EditorGUI$5.class
 com\mycompany\apiconnection\SummaryGUI$10.class
 com\mycompany\apiconnection\SummaryGUI$16.class
+com\mycompany\apiconnection\SummaryGUI$20.class
 com\mycompany\apiconnection\CryptoChaunGUI$19.class
 com\mycompany\apiconnection\RSSReader.class
 com\mycompany\apiconnection\LoginGUI$3.class
@@ -16,6 +17,7 @@ com\mycompany\apiconnection\ChatGUI$2.class
 com\mycompany\apiconnection\EditorGUI$6.class
 com\mycompany\apiconnection\CryptoChaunGUI$16.class
 com\mycompany\apiconnection\SummaryGUI$1.class
+com\mycompany\apiconnection\UserSetting$3.class
 com\mycompany\apiconnection\EditorGUI.class
 com\mycompany\apiconnection\ChatServer.class
 com\mycompany\apiconnection\CryptoChaunGUI$9.class
@@ -25,12 +27,14 @@ com\mycompany\apiconnection\SummaryGUI$4.class
 com\mycompany\apiconnection\SummaryGUI$14.class
 com\mycompany\apiconnection\LoginGUI$1.class
 com\mycompany\apiconnection\ChatClient$1.class
+com\mycompany\apiconnection\UserSetting.class
 com\mycompany\apiconnection\VerificationGUI$1.class
 com\mycompany\apiconnection\SummaryGUI$7.class
 com\mycompany\apiconnection\VerificationGUI$5.class
 com\mycompany\apiconnection\CryptoChaunGUI$18.class
 com\mycompany\apiconnection\ChatGUI$5.class
 com\mycompany\apiconnection\CryptoChaunGUI$2.class
+com\mycompany\apiconnection\UserSetting$2.class
 com\mycompany\apiconnection\APIConnection.class
 com\mycompany\apiconnection\ChatGUI$1.class
 com\mycompany\apiconnection\CryptoChaunGUI$6.class
@@ -52,6 +56,7 @@ com\mycompany\apiconnection\ChatGUI$4.class
 com\mycompany\apiconnection\CryptoChaunGUI$17.class
 com\mycompany\apiconnection\TutorialGUI$2.class
 com\mycompany\apiconnection\CryptoChaunGUI$1.class
+com\mycompany\apiconnection\SummaryGUI$21.class
 com\mycompany\apiconnection\ChatProtocol.class
 com\mycompany\apiconnection\SummaryGUI$11.class
 com\mycompany\apiconnection\SummaryGUI$15.class
@@ -65,8 +70,10 @@ com\mycompany\apiconnection\CryptoChaunGUI$13.class
 com\mycompany\apiconnection\CryptoChaunGUI$5.class
 com\mycompany\apiconnection\EditorGUI$3.class
 com\mycompany\apiconnection\CredentialManager.class
+com\mycompany\apiconnection\FileManager.class
 com\mycompany\apiconnection\SummaryGUI.class
 com\mycompany\apiconnection\RegistrationGUI$2.class
+com\mycompany\apiconnection\SummaryGUI$19.class
 com\mycompany\apiconnection\CryptoChaunGUI$11.class
 com\mycompany\apiconnection\SummaryGUI$9.class
 com\mycompany\apiconnection\MongoDBManager.class
@@ -75,6 +82,7 @@ com\mycompany\apiconnection\SummaryGUI$2.class
 com\mycompany\apiconnection\CryptoChaunGUI$7.class
 com\mycompany\apiconnection\TutorialGUI$1.class
 com\mycompany\apiconnection\CryptoChaunGUI.class
+com\mycompany\apiconnection\UserSetting$1.class
 com\mycompany\apiconnection\VerificationGUI$6.class
 com\mycompany\apiconnection\ChatGUI$6.class
 com\mycompany\apiconnection\CryptoChaunGUI$4.class

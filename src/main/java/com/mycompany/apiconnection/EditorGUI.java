@@ -16,6 +16,8 @@ public class EditorGUI extends javax.swing.JFrame {
     private MongoDBManager mongoManager;
     private APIManager APIManager;
     private GUIManager guiManager;
+    private LoginGUI loginGUI;
+    
     /**
      * Creates new form EditorGUI
      */
@@ -23,6 +25,9 @@ public class EditorGUI extends javax.swing.JFrame {
         initComponents();
     }
     
+    public void setLoginGUI(LoginGUI loginGUI){
+        this.loginGUI = loginGUI;
+    }
     public void setMongoDBManager(MongoDBManager mongoManager) {
         this.mongoManager = mongoManager;
     }
@@ -210,8 +215,17 @@ public class EditorGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_deleteBTNActionPerformed
 
     private void backBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBTNActionPerformed
-        // TODO add your handling code here:
-        guiManager.loadFrame("summaryFrame");
+        if (loginGUI != null) {
+            loginGUI.saveDatabaseLocally();
+        } else {
+            System.out.println("loginGUI is null");
+        }
+
+        if (guiManager != null) {
+            guiManager.loadFrame("summaryFrame");
+        } else {
+            System.out.println("guiManager is null");
+        }
     }//GEN-LAST:event_backBTNActionPerformed
 
     public void confirmBTNActionPerformed(java.awt.event.ActionEvent evt, javax.swing.JComboBox cBox,
